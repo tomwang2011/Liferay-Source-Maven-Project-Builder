@@ -326,32 +326,32 @@ public class CreatePOM {
 		}
 	}
 
-	public static void setGroupId(String arg) {
-		_groupId = arg;
-	}
-
 	public static void setArtifactId(String arg) {
 		_artifactId = arg;
-	}
-
-	public static void setVersion(String arg) {
-		_version = arg;
-	}
-
-	public static void setPackaging(String arg) {
-		_packaging = arg;
-	}
-
-	public static void setName(String arg) {
-		_name = arg;
 	}
 
 	public static void setFullPath(String arg) {
 		_fullPath = arg;
 	}
 
+	public static void setGroupId(String arg) {
+		_groupId = arg;
+	}
+
+	public static void setName(String arg) {
+		_name = arg;
+	}
+
+	public static void setPackaging(String arg) {
+		_packaging = arg;
+	}
+
 	public static void setPortalDir(String arg) {
 		_portalDir = arg;
+	}
+
+	public static void setVersion(String arg) {
+		_version = arg;
 	}
 
 	private static String _groupId;
