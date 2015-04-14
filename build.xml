@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+
+<project name="portal" basedir="." default="deploy-pom" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<!--Set to Liferay Portal directory-->
+	<property name="sourcedir" value="/liferaysc/portal" />
+
+	<property name="app.server.lib.global.dir" value="/liferaysc/tomcat/tomcat-7.0.42/lib/ext" />
+	<property name="app.server.lib.portal.dir" value="/liferaysc/tomcat/tomcat-7.0.42/webapps/ROOT/WEB-INF/lib" />
+	<property name="groupId" value="com.liferay" />
+	<property name="module.list" value="" />
+	<property name="project.dir" value="${basedir}/portal" />
+	<property name="sdk.dir" value="${sourcedir}/tools/sdk" />
+	<property name="version" value="1.0.0" />
+
+	<path id="plugin.classpath">
+		<fileset dir="${app.server.lib.global.dir}" includes="*.jar" />
+		<fileset dir="${app.server.lib.portal.dir}" includes="*.jar" />
+		<fileset dir="${sdk.dir}/dependencies/aQute.bnd/lib" includes="*.jar" />
+		<fileset dir="${sdk.dir}/lib" includes="activation.jar,javax.servlet-api.jar,jsp-api.jar,mail.jar" />
+	</path>
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${sourcedir}/lib/development/ant-contrib.jar" />
+		</classpath>
+	</taskdef>
+
+	<macrodef name="build-module-list">
+		<sequential>
+			<if>
+				<equals arg1="${module.list}" arg2="" />
+				<then>
+					<var name="concat" value="${src.dir.name}" />
+				</then>
+				<else>
+					<var name="concat" value="${module.list} ${src.dir.name}" />
+				</else>
+			</if>
+			<var name="module.list" value="${concat}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="deploy-child-pom">
+		<attribute name="src.dir.name" />
+		<attribute name="src.path" />
+
+		<sequential>
+			<resolve-module-dependencies
+				src.path="@{src.path}"
+			/>
+
+			<java classname="CreatePOM" classpath="${basedir}/classes">
+				<arg value="${groupId}" />
+				<arg value="@{src.dir.name}" />
+				<arg value="${version}" />
+				<arg value="jar" />
+				<arg value="@{src.dir.name}" />
+				<arg value="@{src.path}" />
+				<arg value="${sourcedir}" />
+			</java>
+
+			<if>
+				<available file="test/${src.dir.name}/pom.xml" />
+				<then>
+					<loadfile srcfile="test/${src.dir.name}/pom.xml" property="dependency-set">
+						<filterchain>
+							<headfilter lines="-1" skip="14" />
+						</filterchain>
+					</loadfile>
+
+					<if>
+						<isset property="dependency-set" />
+						<then>
+							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
+								<replacetoken><![CDATA[  <dependencies/>
+</project>]]></replacetoken>
+							</replace>
+						</then>
+					</if>
+				</then>
+			</if>
+
+			<var name="dependency-set" unset="true" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="resolve-module-dependencies">
+		<attribute name="src.path" />
+
+		<sequential>
+			<if>
+				<available file="${src.dir}/ivy.xml" />
+				<then>
+					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="test/${src.dir.name}/pom.xml" />
+					<xmlproperty file="test/${src.dir.name}/pom.xml" collapseAttributes="true" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<target name="deploy-all">
+		<ant target="compile-java" />
+
+		<for param="folder">
+			<path>
+				<dirset dir="${sourcedir}">
+					<include name="**/src"/>
+				</dirset>
+			</path>
+			<sequential>
+				<dirname property="src.dir" file="@{folder}" />
+
+				<basename property="src.dir.name" file="${src.dir}" />
+
+				<if>
+					<equals arg1="${src.dir.name}" arg2="WEB-INF" />
+					<then>
+						<dirname property="temp" file="${src.dir}" />
+
+						<var name="src.dir" unset="true" />
+
+						<dirname property="src.dir" file="${temp}" />
+
+						<var name="temp" unset="true" />
+
+						<var name="src.dir.name" unset="true" />
+
+						<basename property="src.dir.name" file="${src.dir}" />
+					</then>
+				</if>
+
+				<mkdir dir="${project.dir}/${src.dir.name}" />
+
+				<deploy-child-pom
+					src.dir.name="${src.dir.name}"
+					src.path="@{folder}"
+				/>
+
+				<build-module-list />
+
+				<var name="src.dir" unset="true" />
+				<var name="src.dir.name" unset="true" />
+			</sequential>
+		</for>
+	</target>
+
+	<target name="clean-up">
+		<delete dir="test" quiet="true"/>
+	</target>
+
+	<target name="compile-java">
+		<mkdir dir="classes" />
+
+		<javac
+			srcdir="${basedir}/src"
+			destdir="${basedir}/classes"
+			includeantruntime="false"
+		/>
+	</target>
+
+	<target name="deploy-pom" depends="deploy-all">
+		<pathconvert property="plugin.classpath.convert" refid="plugin.classpath" pathsep=" " />
+
+		<java classname="CreatePOM" classpath="${basedir}/classes">
+			<arg value="${groupId}" />
+			<arg value="portal" />
+			<arg value="${version}" />
+			<arg value="pom" />
+			<arg value="Liferay Portal" />
+			<arg value="${sourcedir}" />
+
+			<arg line="${module.list}" />
+			<arg line="${plugin.classpath.convert}" />
+		</java>
+
+		<antcall target="clean-up" />
+	</target>
+</project>
