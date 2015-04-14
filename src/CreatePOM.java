@@ -147,7 +147,7 @@ public class CreatePOM {
 			i++;
 		}
 
-		return(i);
+		return (i);
 	}
 
 	public static void createParentElementProperties(Document document, Element projectElement, Element portalSourceDirElement) {
@@ -303,19 +303,47 @@ public class CreatePOM {
 	}
 
 	public static void parseArgument(String[] args) {
-		_groupId = args[0];
+		setGroupId(args[0]);
 
-		_artifactId = args[1];
+		setArtifactId(args[1]);
 
-		_version = args[2];
+		setVersion(args[2]);
 
-		_packaging = args[3];
+		setPackaging(args[3]);
 
-		_name = args[4];
+		setName(args[4]);
 
-		_fullPath = args[5];
+		setFullPath(args[5]);
 
-		_portalDir = args[6];
+		setPortalDir(args[6]);
+	}
+
+	public static void setGroupId(String arg) {
+		_groupId = arg;
+	}
+
+	public static void setArtifactId(String arg) {
+		_artifactId = arg;
+	}
+
+	public static void setVersion(String arg) {
+		_version = arg;
+	}
+
+	public static void setPackaging(String arg) {
+		_packaging = arg;
+	}
+
+	public static void setName(String arg) {
+		_name = arg;
+	}
+
+	public static void setFullPath(String arg) {
+		_fullPath = arg;
+	}
+
+	public static void setPortalDir(String arg) {
+		_portalDir = arg;
 	}
 
 	private static String _groupId;
