@@ -42,11 +42,11 @@
 
 	<macrodef name="deploy-child-pom">
 		<attribute name="src.dir.name" />
-		<attribute name="src.path" />
+		<attribute name="folder" />
 
 		<sequential>
 			<resolve-module-dependencies
-				src.path="@{src.path}"
+				folder="@{folder}"
 			/>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
@@ -55,7 +55,7 @@
 				<arg value="${version}" />
 				<arg value="jar" />
 				<arg value="@{src.dir.name}" />
-				<arg value="@{src.path}" />
+				<arg value="@{folder}" />
 				<arg value="${sourcedir}" />
 			</java>
 
@@ -85,7 +85,7 @@
 	</macrodef>
 
 	<macrodef name="resolve-module-dependencies">
-		<attribute name="src.path" />
+		<attribute name="folder" />
 
 		<sequential>
 			<if>
@@ -133,7 +133,7 @@
 
 				<deploy-child-pom
 					src.dir.name="${src.dir.name}"
-					src.path="@{folder}"
+					folder="@{folder}"
 				/>
 
 				<build-module-list />
