@@ -303,19 +303,27 @@ public class CreatePOM {
 	}
 
 	public static void parseArgument(String[] args) {
-		setGroupId(args[0]);
+		if (args.length < 7) {
+			System.out.println(
+				"Insufficient number of inputs, please use the following order "
+				+ "of inputs: GroupId, ArtifactId, Version, Packaging, "
+				+ "Name, FullPath-to-module, Portal-path");
+		}
+		else {
+			setGroupId(args[0]);
 
-		setArtifactId(args[1]);
+			setArtifactId(args[1]);
 
-		setVersion(args[2]);
+			setVersion(args[2]);
 
-		setPackaging(args[3]);
+			setPackaging(args[3]);
 
-		setName(args[4]);
+			setName(args[4]);
 
-		setFullPath(args[5]);
+			setFullPath(args[5]);
 
-		setPortalDir(args[6]);
+			setPortalDir(args[6]);
+		}
 	}
 
 	public static void setGroupId(String arg) {
