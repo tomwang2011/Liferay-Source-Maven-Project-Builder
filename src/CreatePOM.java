@@ -132,7 +132,7 @@ public class CreatePOM {
 		createDependenciesElement(document, projectElement, 7, args);
 	}
 
-	public static void createModulesElement(Document document, Element projectElement, int i, String[] args) {
+	public static int createModulesElement(Document document, Element projectElement, int i, String[] args) {
 		Element modulesElement = document.createElement("modules");
 
 		projectElement.appendChild(modulesElement);
@@ -146,6 +146,8 @@ public class CreatePOM {
 
 			i++;
 		}
+
+		return(i);
 	}
 
 	public static void createParentElementProperties(Document document, Element projectElement, Element portalSourceDirElement) {
@@ -185,7 +187,7 @@ public class CreatePOM {
 
 		int i = 6;
 
-		createModulesElement(document, projectElement, i, args);
+		i = createModulesElement(document, projectElement, i, args);
 
 		createDependenciesElement(document, projectElement, i, args);
 
@@ -284,20 +286,20 @@ public class CreatePOM {
 
 		DOMSource source = new DOMSource(document);
 
-		StreamResult result;
+		StreamResult streamResult;
 
 		if (_artifactId.equals("portal")) {
-			result = new StreamResult(new File(_artifactId + "/pom.xml"));
+			streamResult = new StreamResult(new File(_artifactId + "/pom.xml"));
 		}
 		else {
-			result = new StreamResult(
+			streamResult = new StreamResult(
 				new File("portal/" + _artifactId + "/pom.xml"));
 		}
 
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty(
 			"{http://xml.apache.org/xslt}indent-amount", "2");
-		transformer.transform(source, result);
+		transformer.transform(source, streamResult);
 	}
 
 	public static void parseArgument(String[] args) {
