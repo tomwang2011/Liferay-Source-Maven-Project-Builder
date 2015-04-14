@@ -185,9 +185,7 @@ public class CreatePOM {
 
 		createPropertiesElement(document, portalSourceDirElement, projectElement);
 
-		int i = 6;
-
-		i = createModulesElement(document, projectElement, i, args);
+		int i = createModulesElement(document, projectElement, 6, args);
 
 		createDependenciesElement(document, projectElement, i, args);
 
@@ -306,8 +304,8 @@ public class CreatePOM {
 		if (args.length < 7) {
 			System.out.println(
 				"Insufficient number of inputs, please use the following order "
-				+ "of inputs: GroupId, ArtifactId, Version, Packaging, "
-				+ "Name, FullPath-to-module, Portal-path");
+				+ "of inputs: GroupId, ArtifactId, Version, Packaging, Name, "
+				+ "FullPath-to-module, Portal-path, Modules, Dependencies");
 		}
 		else {
 			setGroupId(args[0]);
