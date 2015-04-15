@@ -44,6 +44,18 @@
 								<replacetoken><![CDATA[  <dependencies/>
 </project>]]></replacetoken>
 							</replace>
+
+							<var name="dependency-set" unset="true" />
+
+							<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
+								<filterchain>
+									<headfilter lines="-1" skip="15" />
+								</filterchain>
+							</loadfile>
+							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
+								<replacetoken><![CDATA[  </dependencies>
+</project>]]></replacetoken>
+							</replace>
 						</then>
 					</if>
 				</then>
@@ -113,6 +125,8 @@
 
 				<arg line="${module.lib.classpath.convert}" />
 			</java>
+
+			<var name="module.lib.classpath.convert" unset="true" />
 
 			<ivy-convert />
 
