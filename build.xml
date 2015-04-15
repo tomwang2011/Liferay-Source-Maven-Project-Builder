@@ -25,21 +25,6 @@
 		</classpath>
 	</taskdef>
 
-	<macrodef name="append-module-list">
-		<sequential>
-			<if>
-				<equals arg1="${module.list}" arg2="" />
-				<then>
-					<var name="concat" value="${src.dir.name}" />
-				</then>
-				<else>
-					<var name="concat" value="${module.list} ${src.dir.name}" />
-				</else>
-			</if>
-			<var name="module.list" value="${concat}" />
-		</sequential>
-	</macrodef>
-
 	<macrodef name="append-ivy-dependency">
 		<sequential>
 			<if>
@@ -67,7 +52,40 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="deploy-child-pom">
+	<macrodef name="append-module-list">
+		<sequential>
+			<if>
+				<equals arg1="${module.list}" arg2="" />
+				<then>
+					<var name="concat" value="${src.dir.name}" />
+				</then>
+				<else>
+					<var name="concat" value="${module.list} ${src.dir.name}" />
+				</else>
+			</if>
+			<var name="module.list" value="${concat}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="clean-up">
+		<sequential>
+			<delete dir="ivytopom" quiet="true"/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="compile-java">
+		<sequential>
+			<mkdir dir="classes" />
+
+			<javac
+				srcdir="${basedir}/src"
+				destdir="${basedir}/classes"
+				includeantruntime="false"
+			/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="deploy-module-pom">
 		<attribute name="src.dir.name" />
 		<attribute name="module" />
 
@@ -143,7 +161,7 @@
 
 				<mkdir dir="${project.dir}/${src.dir.name}" />
 
-				<deploy-child-pom
+				<deploy-module-pom
 					src.dir.name="${src.dir.name}"
 					module="@{module}"
 				/>
@@ -154,22 +172,6 @@
 				<var name="src.dir.name" unset="true" />
 			</sequential>
 		</for>
-	</target>
-
-	<macrodef name="clean-up">
-		<sequential>
-			<delete dir="ivytopom" quiet="true"/>
-		</sequential>
-	</macrodef>
-
-	<target name="compile-java">
-		<mkdir dir="classes" />
-
-		<javac
-			srcdir="${basedir}/src"
-			destdir="${basedir}/classes"
-			includeantruntime="false"
-		/>
 	</target>
 
 	<target name="deploy-portal-pom" depends="deploy-all-module">
