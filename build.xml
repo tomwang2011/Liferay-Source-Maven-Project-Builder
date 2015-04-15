@@ -40,23 +40,8 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="deploy-child-pom">
-		<attribute name="src.dir.name" />
-		<attribute name="module" />
-
+	<macrodef name="append-ivy-dependency">
 		<sequential>
-			<ivy-convert />
-
-			<java classname="CreatePOM" classpath="${basedir}/classes">
-				<arg value="${groupId}" />
-				<arg value="@{src.dir.name}" />
-				<arg value="${version}" />
-				<arg value="jar" />
-				<arg value="@{src.dir.name}" />
-				<arg value="@{module}" />
-				<arg value="${sourcedir}" />
-			</java>
-
 			<if>
 				<available file="ivytopom/${src.dir.name}/pom.xml" />
 				<then>
@@ -79,6 +64,27 @@
 			</if>
 
 			<var name="dependency-set" unset="true" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="deploy-child-pom">
+		<attribute name="src.dir.name" />
+		<attribute name="module" />
+
+		<sequential>
+			<java classname="CreatePOM" classpath="${basedir}/classes">
+				<arg value="${groupId}" />
+				<arg value="@{src.dir.name}" />
+				<arg value="${version}" />
+				<arg value="jar" />
+				<arg value="@{src.dir.name}" />
+				<arg value="@{module}" />
+				<arg value="${sourcedir}" />
+			</java>
+
+			<ivy-convert />
+
+			<append-ivy-dependency />
 		</sequential>
 	</macrodef>
 
