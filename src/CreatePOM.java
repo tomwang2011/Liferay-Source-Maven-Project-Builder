@@ -301,13 +301,7 @@ public class CreatePOM {
 	}
 
 	public static void parseArgument(String[] args) {
-		if (args.length < 7) {
-			System.out.println(
-				"Insufficient number of inputs, please use the following order "
-				+ "of inputs: GroupId, ArtifactId, Version, Packaging, Name, "
-				+ "FullPath-to-module, Portal-path, Modules, Dependencies");
-		}
-		else {
+		try {
 			setGroupId(args[0]);
 
 			setArtifactId(args[1]);
@@ -321,6 +315,14 @@ public class CreatePOM {
 			setFullPath(args[5]);
 
 			setPortalDir(args[6]);
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println(
+				"Insufficient number of inputs, please use the following order "
+				+ "of inputs: GroupId, ArtifactId, Version, Packaging, Name, "
+				+ "FullPath-to-module, Portal-path, Modules, Dependencies");
+
+			System.exit(1);
 		}
 	}
 
