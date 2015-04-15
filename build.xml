@@ -13,7 +13,7 @@
 	<property name="sdk.dir" value="${portal.dir}/tools/sdk" />
 	<property name="version" value="1.0.0" />
 
-	<path id="plugin.classpath">
+	<path id="module.classpath">
 		<fileset dir="${app.server.lib.global.dir}" includes="*.jar" />
 		<fileset dir="${app.server.lib.portal.dir}" includes="*.jar" />
 		<fileset dir="${sdk.dir}/dependencies/aQute.bnd/lib" includes="*.jar" />
@@ -91,6 +91,17 @@
 		<attribute name="module" />
 
 		<sequential>
+			<if>
+				<available file="${src.dir}/lib" type="dir" />
+				<then>
+					<path id="module.lib.classpath">
+						<fileset dir="${src.dir}/lib" />
+					</path>
+
+					<pathconvert property="module.lib.classpath.convert" refid="module.lib.classpath" pathsep=" " />
+				</then>
+			</if>
+
 			<java classname="CreatePOM" classpath="${basedir}/classes">
 				<arg value="${groupId}" />
 				<arg value="@{src.dir.name}" />
@@ -99,6 +110,8 @@
 				<arg value="@{src.dir.name}" />
 				<arg value="@{module}" />
 				<arg value="${portal.dir}" />
+
+				<arg line="${module.lib.classpath.convert}" />
 			</java>
 
 			<ivy-convert />
@@ -189,7 +202,7 @@
 	</target>
 
 	<target name="deploy-portal-pom" depends="deploy-all-module">
-		<pathconvert property="plugin.classpath.convert" refid="plugin.classpath" pathsep=" " />
+		<pathconvert property="module.classpath.convert" refid="module.classpath" pathsep=" " />
 
 		<java classname="CreatePOM" classpath="${basedir}/classes">
 			<arg value="${groupId}" />
@@ -200,7 +213,7 @@
 			<arg value="${portal.dir}" />
 
 			<arg line="${module.list}" />
-			<arg line="${plugin.classpath.convert}" />
+			<arg line="${module.classpath.convert}" />
 		</java>
 
 		<clean-up />
