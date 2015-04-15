@@ -2,14 +2,14 @@
 
 <project name="portal" basedir="." default="deploy-portal-pom" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<!--Set to Liferay Portal directory-->
-	<property name="sourcedir" value="/liferaysc/portal" />
+	<property name="portal.dir" value="/liferaysc/portal" />
 
 	<property name="app.server.lib.global.dir" value="/liferaysc/tomcat/tomcat-7.0.42/lib/ext" />
 	<property name="app.server.lib.portal.dir" value="/liferaysc/tomcat/tomcat-7.0.42/webapps/ROOT/WEB-INF/lib" />
 	<property name="groupId" value="com.liferay" />
 	<property name="module.list" value="" />
 	<property name="project.dir" value="${basedir}/portal" />
-	<property name="sdk.dir" value="${sourcedir}/tools/sdk" />
+	<property name="sdk.dir" value="${portal.dir}/tools/sdk" />
 	<property name="version" value="1.0.0" />
 
 	<path id="plugin.classpath">
@@ -21,7 +21,7 @@
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
-			<pathelement location="${sourcedir}/lib/development/ant-contrib.jar" />
+			<pathelement location="${portal.dir}/lib/development/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
 
@@ -97,7 +97,7 @@
 				<arg value="jar" />
 				<arg value="@{src.dir.name}" />
 				<arg value="@{module}" />
-				<arg value="${sourcedir}" />
+				<arg value="${portal.dir}" />
 			</java>
 
 			<ivy-convert />
@@ -146,11 +146,11 @@
 	</macrodef>
 
 	<target name="deploy-all-module">
-		<ant target="compile-java" />
+		<compile-java />
 
 		<for param="module">
 			<path>
-				<dirset dir="${sourcedir}">
+				<dirset dir="${portal.dir}">
 					<include name="**/src"/>
 				</dirset>
 			</path>
@@ -183,7 +183,7 @@
 			<arg value="${version}" />
 			<arg value="pom" />
 			<arg value="Liferay Portal" />
-			<arg value="${sourcedir}" />
+			<arg value="${portal.dir}" />
 
 			<arg line="${module.list}" />
 			<arg line="${plugin.classpath.convert}" />
