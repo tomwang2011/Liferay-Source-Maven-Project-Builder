@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="portal" basedir="." default="deploy-portal-pom" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="MavenPortal" basedir="." default="deploy-portal-pom" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<!--Set to Liferay Portal directory-->
 	<property name="portal.dir" value="/liferaysc/portal" />
 	<property name="tomcat.dir" value="/liferaysc/tomcat/tomcat-7.0.42" />
