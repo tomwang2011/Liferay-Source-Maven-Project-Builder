@@ -25,7 +25,7 @@
 		</classpath>
 	</taskdef>
 
-	<macrodef name="build-module-list">
+	<macrodef name="append-module-list">
 		<sequential>
 			<if>
 				<equals arg1="${module.list}" arg2="" />
@@ -45,9 +45,7 @@
 		<attribute name="module" />
 
 		<sequential>
-			<resolve-module-dependencies
-				module="@{module}"
-			/>
+			<resolve-module-dependencies />
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
 				<arg value="${groupId}" />
@@ -60,9 +58,9 @@
 			</java>
 
 			<if>
-				<available file="test/${src.dir.name}/pom.xml" />
+				<available file="ivytopom/${src.dir.name}/pom.xml" />
 				<then>
-					<loadfile srcfile="test/${src.dir.name}/pom.xml" property="dependency-set">
+					<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
 						<filterchain>
 							<headfilter lines="-1" skip="14" />
 						</filterchain>
@@ -85,14 +83,12 @@
 	</macrodef>
 
 	<macrodef name="resolve-module-dependencies">
-		<attribute name="module" />
-
 		<sequential>
 			<if>
 				<available file="${src.dir}/ivy.xml" />
 				<then>
-					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="test/${src.dir.name}/pom.xml" />
-					<xmlproperty file="test/${src.dir.name}/pom.xml" collapseAttributes="true" />
+					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" />
+					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" collapseAttributes="true" />
 				</then>
 			</if>
 		</sequential>
@@ -138,6 +134,7 @@
 				<set-module-source-directory
 					module="@{module}"
 				/>
+
 				<mkdir dir="${project.dir}/${src.dir.name}" />
 
 				<deploy-child-pom
@@ -145,7 +142,7 @@
 					module="@{module}"
 				/>
 
-				<build-module-list />
+				<append-module-list />
 
 				<var name="src.dir" unset="true" />
 				<var name="src.dir.name" unset="true" />
@@ -153,9 +150,11 @@
 		</for>
 	</target>
 
-	<target name="clean-up">
-		<delete dir="test" quiet="true"/>
-	</target>
+	<macrodef name="clean-up">
+		<sequential>
+			<delete dir="ivytopom" quiet="true"/>
+		</sequential>
+	</macrodef>
 
 	<target name="compile-java">
 		<mkdir dir="classes" />
