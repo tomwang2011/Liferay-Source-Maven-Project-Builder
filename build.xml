@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="portal" basedir="." default="deploy-pom" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="portal" basedir="." default="deploy-portal-pom" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<!--Set to Liferay Portal directory-->
 	<property name="sourcedir" value="/liferaysc/portal" />
 
@@ -42,11 +42,11 @@
 
 	<macrodef name="deploy-child-pom">
 		<attribute name="src.dir.name" />
-		<attribute name="folder" />
+		<attribute name="module" />
 
 		<sequential>
 			<resolve-module-dependencies
-				folder="@{folder}"
+				module="@{module}"
 			/>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
@@ -55,7 +55,7 @@
 				<arg value="${version}" />
 				<arg value="jar" />
 				<arg value="@{src.dir.name}" />
-				<arg value="@{folder}" />
+				<arg value="@{module}" />
 				<arg value="${sourcedir}" />
 			</java>
 
@@ -85,7 +85,7 @@
 	</macrodef>
 
 	<macrodef name="resolve-module-dependencies">
-		<attribute name="folder" />
+		<attribute name="module" />
 
 		<sequential>
 			<if>
@@ -98,17 +98,17 @@
 		</sequential>
 	</macrodef>
 
-	<target name="deploy-all">
+	<target name="deploy-all-module">
 		<ant target="compile-java" />
 
-		<for param="folder">
+		<for param="module">
 			<path>
 				<dirset dir="${sourcedir}">
 					<include name="**/src"/>
 				</dirset>
 			</path>
 			<sequential>
-				<dirname property="src.dir" file="@{folder}" />
+				<dirname property="src.dir" file="@{module}" />
 
 				<basename property="src.dir.name" file="${src.dir}" />
 
@@ -133,7 +133,7 @@
 
 				<deploy-child-pom
 					src.dir.name="${src.dir.name}"
-					folder="@{folder}"
+					module="@{module}"
 				/>
 
 				<build-module-list />
@@ -158,7 +158,7 @@
 		/>
 	</target>
 
-	<target name="deploy-pom" depends="deploy-all">
+	<target name="deploy-portal-pom" depends="deploy-all-module">
 		<pathconvert property="plugin.classpath.convert" refid="plugin.classpath" pathsep=" " />
 
 		<java classname="CreatePOM" classpath="${basedir}/classes">
