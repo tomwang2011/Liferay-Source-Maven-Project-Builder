@@ -45,7 +45,7 @@
 		<attribute name="module" />
 
 		<sequential>
-			<resolve-module-dependencies />
+			<ivy-convert />
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
 				<arg value="${groupId}" />
@@ -82,7 +82,7 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="resolve-module-dependencies">
+	<macrodef name="ivy-convert">
 		<sequential>
 			<if>
 				<available file="${src.dir}/ivy.xml" />
@@ -181,6 +181,6 @@
 			<arg line="${plugin.classpath.convert}" />
 		</java>
 
-		<antcall target="clean-up" />
+		<clean-up />
 	</target>
 </project>
