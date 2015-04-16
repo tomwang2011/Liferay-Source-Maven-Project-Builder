@@ -162,10 +162,21 @@
 
 				<mkdir dir="${project.dir}/${src.dir.name}" />
 
-				<deploy-module-pom
-					src.dir.name="${src.dir.name}"
-					module="@{module}"
-				/>
+				<if>
+					<available file="${src.dir}/test" type="dir" />
+					<then>
+						<deploy-module-pom
+							src.dir.name="${src.dir.name}"
+							module="${src.dir}/test"
+						/>
+					</then>
+					<else>
+						<deploy-module-pom
+							src.dir.name="${src.dir.name}"
+							module="@{module}"
+						/>
+					</else>
+				</if>
 
 				<append-module-list />
 
