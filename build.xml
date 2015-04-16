@@ -8,6 +8,7 @@
 	<property name="app.server.lib.global.dir" value="${tomcat.dir}/lib/ext" />
 	<property name="app.server.lib.portal.dir" value="${tomcat.dir}/webapps/ROOT/WEB-INF/lib" />
 	<property name="groupId" value="com.liferay" />
+	<property name="module.dependency.list" value="" />
 	<property name="module.list" value="" />
 	<property name="project.dir" value="${basedir}/portal" />
 	<property name="sdk.dir" value="${portal.dir}/tools/sdk" />
@@ -19,6 +20,21 @@
 		<fileset dir="${sdk.dir}/dependencies/aQute.bnd/lib" includes="*.jar" />
 		<fileset dir="${sdk.dir}/lib" includes="activation.jar,javax.servlet-api.jar,jsp-api.jar,mail.jar" />
 	</path>
+
+	<scriptdef name="parser" language="javascript">
+		<attribute name="module" />
+		<attribute name="splitter" />
+		<attribute name="property" />
+		<attribute name="extension" />
+		<![CDATA[
+	    var module = attributes.get("module");
+	    var splitter = attributes.get("splitter");
+		var index = module.lastIndexOf(splitter);
+		if (index == -1) index = module.length()-1;
+		project.setProperty(attributes.get("property"), module.substring(0, index));
+		project.setProperty(attributes.get("extension"), module.substring(index, module.length()));
+		]]>
+	</scriptdef>
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
@@ -33,15 +49,14 @@
 				<then>
 					<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
 						<filterchain>
-							<headfilter lines="-1" skip="14" />
+							<headfilter lines="-1" skip="15" />
 						</filterchain>
 					</loadfile>
-
 					<if>
 						<isset property="dependency-set" />
 						<then>
 							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
-								<replacetoken><![CDATA[  <dependencies/>
+								<replacetoken><![CDATA[  </dependencies>
 </project>]]></replacetoken>
 							</replace>
 
@@ -49,11 +64,11 @@
 
 							<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
 								<filterchain>
-									<headfilter lines="-1" skip="15" />
+									<headfilter lines="-1" skip="14" />
 								</filterchain>
 							</loadfile>
 							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
-								<replacetoken><![CDATA[  </dependencies>
+								<replacetoken><![CDATA[  <dependencies/>
 </project>]]></replacetoken>
 							</replace>
 						</then>
@@ -80,6 +95,22 @@
 		</sequential>
 	</macrodef>
 
+	<macrodef name="append-module-dependency-list">
+		<attribute name="dependency" />
+		<sequential>
+			<if>
+				<equals arg1="${module.dependency.list}" arg2="" />
+				<then>
+					<var name="concat" value="@{dependency}" />
+				</then>
+				<else>
+					<var name="concat" value="${module.dependency.list} @{dependency}" />
+				</else>
+			</if>
+			<var name="module.dependency.list" value="${concat}" />
+		</sequential>
+	</macrodef>
+
 	<macrodef name="clean-up">
 		<sequential>
 			<delete dir="ivytopom" quiet="true"/>
@@ -103,15 +134,33 @@
 		<attribute name="module" />
 
 		<sequential>
-			<if>
-				<available file="${src.dir}/lib" type="dir" />
-				<then>
-					<path id="module.lib.classpath">
-						<fileset dir="${src.dir}/lib" />
-					</path>
+			<parser module="@{src.dir.name}" splitter="-" property="module.name" extension="module.extension" />
 
-					<pathconvert property="module.lib.classpath.convert" refid="module.lib.classpath" pathsep=" " />
+			<if>
+				<and>
+					<available file="${project.dir}/${module.name}-api" type="dir" />
+					<equals arg1="${module.extension}" arg2="-service" />
+				</and>
+				<then>
+					<append-module-dependency-list
+						dependency="${module.name}-api"
+					/>
 				</then>
+				<elseif>
+					<and>
+						<available file="${project.dir}/${module.name}-api" type="dir" />
+						<available file="${project.dir}/${module.name}-service" type="dir" />
+						<equals arg1="${module.extension}" arg2="-web" />
+					</and>
+					<then>
+						<append-module-dependency-list
+							dependency="${module.name}-api"
+						/>
+						<append-module-dependency-list
+							dependency="${module.name}-service"
+						/>
+					</then>
+				</elseif>
 			</if>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
@@ -123,10 +172,12 @@
 				<arg value="@{module}" />
 				<arg value="${portal.dir}" />
 
-				<arg line="${module.lib.classpath.convert}" />
+				<arg line="${module.dependency.list}" />
 			</java>
 
 			<var name="module.lib.classpath.convert" unset="true" />
+			<var name="module.dependency.list" unset="true" />
+			<var name="module.dependency.list" value="" />
 
 			<ivy-convert />
 

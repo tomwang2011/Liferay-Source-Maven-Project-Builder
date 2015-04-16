@@ -109,17 +109,19 @@ public class CreatePOM {
 
 		dependencyElement.appendChild(dependencyVersionElement);
 
-		Element dependencyScopeElement = document.createElement("scope");
+		if(artifactIdToken[artifactIdToken.length - 1].endsWith("jar")) {
+			Element dependencyScopeElement = document.createElement("scope");
 
-		dependencyScopeElement.appendChild(document.createTextNode("system"));
+			dependencyScopeElement.appendChild(document.createTextNode("system"));
 
-		dependencyElement.appendChild(dependencyScopeElement);
+			dependencyElement.appendChild(dependencyScopeElement);
 
-		Element dependencySystemPathElement = document.createElement("systemPath");
+			Element dependencySystemPathElement = document.createElement("systemPath");
 
-		dependencySystemPathElement.appendChild(document.createTextNode(args[j]));
+			dependencySystemPathElement.appendChild(document.createTextNode(args[j]));
 
-		dependencyElement.appendChild(dependencySystemPathElement);
+			dependencyElement.appendChild(dependencySystemPathElement);
+		}
 
 		dependenciesElement.appendChild(dependencyElement);
 	}
