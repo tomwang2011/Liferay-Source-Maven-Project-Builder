@@ -296,7 +296,7 @@ public class CreatePOM {
 
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty(
-			"{http://xml.apache.org/xslt}indent-amount", "2");
+			"{http://xml.apache.org/xslt}indent-amount", "4");
 		transformer.transform(source, streamResult);
 	}
 
