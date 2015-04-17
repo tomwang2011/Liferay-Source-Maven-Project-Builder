@@ -242,21 +242,10 @@
 
 				<mkdir dir="${project.dir}/${src.dir.name}" />
 
-				<if>
-					<available file="${src.dir}/test" type="dir" />
-					<then>
-						<deploy-module-pom
-							src.dir.name="${src.dir.name}"
-							module="${src.dir}/test"
-						/>
-					</then>
-					<else>
-						<deploy-module-pom
-							src.dir.name="${src.dir.name}"
-							module="@{module}"
-						/>
-					</else>
-				</if>
+				<deploy-module-pom
+					src.dir.name="${src.dir.name}"
+					module="@{module}"
+				/>
 
 				<append-module-list />
 
@@ -281,6 +270,6 @@
 			<arg line="${module.classpath.convert}" />
 		</java>
 
-		<clean-up />
+<!--		<clean-up />-->
 	</target>
 </project>
