@@ -167,6 +167,21 @@
 						/>
 					</then>
 				</elseif>
+				<elseif>
+					<and>
+						<available file="${project.dir}/${module.name}-factory" type="dir" />
+						<equals arg1="${module.extension}" arg2="-factory" />
+					</and>
+					<then>
+						<var name="temp.property" value="${module.name}" />
+
+						<parser module="${temp.property}" splitter="-" property="module.name" extension="module.extension" />
+
+						<append-module-dependency-list
+							dependency="${module.name}-renderer"
+						/>
+					</then>
+				</elseif>
 			</if>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
