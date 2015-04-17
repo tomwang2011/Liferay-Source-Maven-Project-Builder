@@ -198,6 +198,17 @@
 						/>
 					</then>
 				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="portal-tools-sample-sql-builder" />
+					<then>
+						<append-module-dependency-list
+							dependency="journal-web"
+						/>
+						<append-module-dependency-list
+							dependency="wiki-service"
+						/>
+					</then>
+				</elseif>
 			</if>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
@@ -263,6 +274,7 @@
 					<basename property="src.dir.name" file="${src.dir}" />
 				</then>
 			</if>
+
 		</sequential>
 	</macrodef>
 
@@ -280,14 +292,19 @@
 					module="@{module}"
 				/>
 
-				<mkdir dir="${project.dir}/${src.dir.name}" />
+				<if>
+					<available file="${src.dir}/build.xml" />
+					<then>
+						<mkdir dir="${project.dir}/${src.dir.name}" />
 
-				<deploy-module-pom
-					src.dir.name="${src.dir.name}"
-					module="@{module}"
-				/>
+						<deploy-module-pom
+							src.dir.name="${src.dir.name}"
+							module="@{module}"
+						/>
 
-				<append-module-list />
+						<append-module-list />
+					</then>
+				</if>
 
 				<var name="src.dir" unset="true" />
 				<var name="src.dir.name" unset="true" />
