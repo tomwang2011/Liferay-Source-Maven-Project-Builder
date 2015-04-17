@@ -182,6 +182,14 @@
 						/>
 					</then>
 				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="journal-content-web" />
+					<then>
+						<append-module-dependency-list
+							dependency="journal-web"
+						/>
+					</then>
+				</elseif>
 			</if>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
