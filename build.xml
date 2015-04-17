@@ -137,10 +137,16 @@
 			<parser module="@{src.dir.name}" splitter="-" property="module.name" extension="module.extension" />
 
 			<if>
-				<and>
-					<available file="${project.dir}/${module.name}-api" type="dir" />
-					<equals arg1="${module.extension}" arg2="-service" />
-				</and>
+				<or>
+					<and>
+						<available file="${project.dir}/${module.name}-api" type="dir" />
+						<equals arg1="${module.extension}" arg2="-service" />
+					</and>
+					<and>
+						<available file="${project.dir}/${module.name}-api" type="dir" />
+						<equals arg1="${module.extension}" arg2="-impl" />
+					</and>
+				</or>
 				<then>
 					<append-module-dependency-list
 						dependency="${module.name}-api"
@@ -190,8 +196,11 @@
 			<if>
 				<available file="${src.dir}/ivy.xml" />
 				<then>
-					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" conf="default">
+					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" conf="default, internal, provided, test">
 						<mapping conf="default" scope="compile" />
+						<mapping conf="internal" scope="compile" />
+						<mapping conf="provided" scope="compile" />
+						<mapping conf="test" scope="compile" />
 					</ivy:makepom>
 					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" collapseAttributes="true" />
 				</then>
@@ -270,6 +279,6 @@
 			<arg line="${module.classpath.convert}" />
 		</java>
 
-<!--		<clean-up />-->
+		<!--		<clean-up />-->
 	</target>
 </project>
