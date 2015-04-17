@@ -210,10 +210,32 @@
 					</then>
 				</elseif>
 				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="util-bridges" />
+					<or>
+						<equals arg1="@{src.dir.name}" arg2="util-bridges" />
+						<equals arg1="@{src.dir.name}" arg2="support-resin" />
+					</or>
 					<then>
 						<append-module-dependency-list
 							dependency="/liferaysc/portal/lib/development/resin.jar"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="support-tomcat" />
+					<then>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/catalina.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/jasper.jar"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="cobertura-agent" />
+					<then>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/cobertura.jar"
 						/>
 					</then>
 				</elseif>
