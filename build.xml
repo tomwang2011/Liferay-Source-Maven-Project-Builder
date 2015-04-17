@@ -190,6 +190,14 @@
 						/>
 					</then>
 				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="portal-ldap" />
+					<then>
+						<append-module-dependency-list
+							dependency="portal-authenticator-ldap"
+						/>
+					</then>
+				</elseif>
 			</if>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
