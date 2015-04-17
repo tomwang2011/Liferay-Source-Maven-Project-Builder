@@ -209,6 +209,14 @@
 						/>
 					</then>
 				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="util-bridges" />
+					<then>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/resin.jar"
+						/>
+					</then>
+				</elseif>
 			</if>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
