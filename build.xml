@@ -239,6 +239,35 @@
 						/>
 					</then>
 				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="portal-impl" />
+					<then>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/deployment.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/qdox.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/jetty-server.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/jetty-util.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/spring-test.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/jalopy.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/derbytools.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/org.freemarker-2.3.17.LIFERAY-PATCHED-1.jar"
+						/>
+					</then>
+				</elseif>
 			</if>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
