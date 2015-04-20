@@ -74,6 +74,18 @@ public class CreatePOM {
 		projectElement.appendChild(buildElement);
 
 		buildElement.appendChild(portalSourceDirElement);
+
+		if(_artifactId.endsWith("-test")) {
+			Element testSourceDirElement = document.createElement("testSourceDirectory");
+
+			String path = _fullPath.substring(_portalDir.length());
+
+			path = path.substring(0, path.length()-3)+"test";
+
+			testSourceDirElement.appendChild(document.createTextNode("${sourceDirectory}" + path));
+
+			buildElement.appendChild(testSourceDirElement);
+		}
 	}
 
 	public static void createDependenciesElement(Document document, Element projectElement, int i, String[] args) {
