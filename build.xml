@@ -306,6 +306,17 @@
 						/>
 					</then>
 				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="bookmarks-test" />
+					<then>
+						<append-module-dependency-list
+							dependency="portal-test-internal"
+						/>
+						<append-module-dependency-list
+							dependency="bookmarks-web"
+						/>
+					</then>
+				</elseif>
 			</if>
 
 			<java classname="CreatePOM" classpath="${basedir}/classes">
@@ -339,7 +350,7 @@
 						<mapping conf="default" scope="compile" />
 						<mapping conf="internal" scope="compile" />
 						<mapping conf="provided" scope="compile" />
-						<mapping conf="test" scope="compile" />
+						<mapping conf="test" scope="test" />
 					</ivy:makepom>
 					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" collapseAttributes="true" />
 				</then>
