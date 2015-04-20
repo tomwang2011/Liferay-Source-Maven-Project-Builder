@@ -169,6 +169,20 @@
 				</elseif>
 				<elseif>
 					<and>
+						<available file="${project.dir}/${module.name}-web" type="dir" />
+						<equals arg1="${module.extension}" arg2="-test" />
+					</and>
+					<then>
+						<append-module-dependency-list
+							dependency="${module.name}-web"
+						/>
+						<append-module-dependency-list
+							dependency="portal-test-internal"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<and>
 						<available file="${project.dir}/${module.name}-factory" type="dir" />
 						<equals arg1="${module.extension}" arg2="-factory" />
 					</and>
@@ -303,17 +317,6 @@
 						/>
 						<append-module-dependency-list
 							dependency="portal-test"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="bookmarks-test" />
-					<then>
-						<append-module-dependency-list
-							dependency="portal-test-internal"
-						/>
-						<append-module-dependency-list
-							dependency="bookmarks-web"
 						/>
 					</then>
 				</elseif>
