@@ -1,3 +1,4 @@
+
 import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -74,12 +75,12 @@ public class CreatePOM {
 
 		buildElement.appendChild(portalSourceDirElement);
 
-		if(_artifactId.endsWith("-test")) {
+		if (_artifactId.endsWith("-test")) {
 			Element testSourceDirElement = document.createElement("testSourceDirectory");
 
 			String path = _fullPath.substring(_portalDir.length());
 
-			path = path.substring(0, path.length()-3)+"test";
+			path = path.substring(0, path.length() - 3) + "test";
 
 			testSourceDirElement.appendChild(document.createTextNode("${sourceDirectory}" + path));
 
@@ -120,7 +121,7 @@ public class CreatePOM {
 
 		dependencyElement.appendChild(dependencyVersionElement);
 
-		if(artifactIdToken[artifactIdToken.length - 1].endsWith("jar")) {
+		if (artifactIdToken[artifactIdToken.length - 1].endsWith("jar")) {
 			Element dependencyScopeElement = document.createElement("scope");
 
 			dependencyScopeElement.appendChild(document.createTextNode("system"));
