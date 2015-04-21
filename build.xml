@@ -134,6 +134,81 @@
 		<attribute name="module" />
 
 		<sequential>
+			<solve-module-specific-dependencies
+				src.dir.name="@{src.dir.name}"
+			/>
+
+			<java classname="CreatePOM" classpath="${basedir}/classes">
+				<arg value="${groupId}" />
+				<arg value="@{src.dir.name}" />
+				<arg value="${version}" />
+				<arg value="jar" />
+				<arg value="@{src.dir.name}" />
+				<arg value="@{module}" />
+				<arg value="${portal.dir}" />
+
+				<arg line="${module.dependency.list}" />
+			</java>
+
+			<var name="module.lib.classpath.convert" unset="true" />
+			<var name="module.dependency.list" unset="true" />
+			<var name="module.dependency.list" value="" />
+
+			<ivy-convert />
+
+			<append-ivy-dependency />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="ivy-convert">
+		<sequential>
+			<if>
+				<available file="${src.dir}/ivy.xml" />
+				<then>
+					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" conf="default, internal, provided, test">
+						<mapping conf="default" scope="compile" />
+						<mapping conf="internal" scope="compile" />
+						<mapping conf="provided" scope="compile" />
+						<mapping conf="test" scope="test" />
+					</ivy:makepom>
+					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" collapseAttributes="true" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="set-module-source-directory">
+		<attribute name="module" />
+
+		<sequential>
+			<dirname property="src.dir" file="@{module}" />
+
+			<basename property="src.dir.name" file="${src.dir}" />
+
+			<if>
+				<equals arg1="${src.dir.name}" arg2="WEB-INF" />
+				<then>
+					<dirname property="temp" file="${src.dir}" />
+
+					<var name="src.dir" unset="true" />
+
+					<dirname property="src.dir" file="${temp}" />
+
+					<var name="temp" unset="true" />
+
+					<var name="src.dir.name" unset="true" />
+
+					<basename property="src.dir.name" file="${src.dir}" />
+				</then>
+			</if>
+
+		</sequential>
+	</macrodef>
+
+	<macrodef name="solve-module-specific-dependencies">
+		<attribute name="src.dir.name" />
+
+		<sequential>
 			<parser module="@{src.dir.name}" splitter="-" property="module.name" extension="module.extension" />
 
 			<if>
@@ -321,71 +396,6 @@
 					</then>
 				</elseif>
 			</if>
-
-			<java classname="CreatePOM" classpath="${basedir}/classes">
-				<arg value="${groupId}" />
-				<arg value="@{src.dir.name}" />
-				<arg value="${version}" />
-				<arg value="jar" />
-				<arg value="@{src.dir.name}" />
-				<arg value="@{module}" />
-				<arg value="${portal.dir}" />
-
-				<arg line="${module.dependency.list}" />
-			</java>
-
-			<var name="module.lib.classpath.convert" unset="true" />
-			<var name="module.dependency.list" unset="true" />
-			<var name="module.dependency.list" value="" />
-
-			<ivy-convert />
-
-			<append-ivy-dependency />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="ivy-convert">
-		<sequential>
-			<if>
-				<available file="${src.dir}/ivy.xml" />
-				<then>
-					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" conf="default, internal, provided, test">
-						<mapping conf="default" scope="compile" />
-						<mapping conf="internal" scope="compile" />
-						<mapping conf="provided" scope="compile" />
-						<mapping conf="test" scope="test" />
-					</ivy:makepom>
-					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" collapseAttributes="true" />
-				</then>
-			</if>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="set-module-source-directory">
-		<attribute name="module" />
-
-		<sequential>
-			<dirname property="src.dir" file="@{module}" />
-
-			<basename property="src.dir.name" file="${src.dir}" />
-
-			<if>
-				<equals arg1="${src.dir.name}" arg2="WEB-INF" />
-				<then>
-					<dirname property="temp" file="${src.dir}" />
-
-					<var name="src.dir" unset="true" />
-
-					<dirname property="src.dir" file="${temp}" />
-
-					<var name="temp" unset="true" />
-
-					<var name="src.dir.name" unset="true" />
-
-					<basename property="src.dir.name" file="${src.dir}" />
-				</then>
-			</if>
-
 		</sequential>
 	</macrodef>
 
