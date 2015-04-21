@@ -82,6 +82,7 @@
 
 	<macrodef name="append-module-dependency-list">
 		<attribute name="dependency" />
+
 		<sequential>
 			<if>
 				<equals arg1="${module.dependency.list}" arg2="" />
