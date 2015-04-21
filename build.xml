@@ -166,10 +166,11 @@
 			<if>
 				<available file="${src.dir}/ivy.xml" />
 				<then>
-					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" conf="default, internal, provided, test">
+					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" conf="default, internal, provided, runtime, test">
 						<mapping conf="default" scope="compile" />
 						<mapping conf="internal" scope="compile" />
-						<mapping conf="provided" scope="compile" />
+						<mapping conf="provided" scope="provided" />
+						<mapping conf="runtime" scope="runtime" />
 						<mapping conf="test" scope="test" />
 					</ivy:makepom>
 					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" collapseAttributes="true" />
