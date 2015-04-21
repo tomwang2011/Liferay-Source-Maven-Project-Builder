@@ -33,7 +33,7 @@ public class CreatePOM {
 			portalSourceDirElement.appendChild(document.createTextNode(_fullPath));
 		}
 		else {
-			createParentElementProperties(document, projectElement, portalSourceDirElement);
+			createParentElement(document, projectElement, portalSourceDirElement);
 		}
 
 		Element artifactIdElement = document.createElement("artifactId");
@@ -164,7 +164,7 @@ public class CreatePOM {
 		return (i);
 	}
 
-	public static void createParentElementProperties(Document document, Element projectElement, Element portalSourceDirElement) {
+	public static void createParentElement(Document document, Element projectElement, Element portalSourceDirElement) {
 		Element parent = document.createElement("parent");
 
 		projectElement.appendChild(parent);

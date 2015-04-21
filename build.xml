@@ -80,21 +80,6 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="append-module-list">
-		<sequential>
-			<if>
-				<equals arg1="${module.list}" arg2="" />
-				<then>
-					<var name="concat" value="${src.dir.name}" />
-				</then>
-				<else>
-					<var name="concat" value="${module.list} ${src.dir.name}" />
-				</else>
-			</if>
-			<var name="module.list" value="${concat}" />
-		</sequential>
-	</macrodef>
-
 	<macrodef name="append-module-dependency-list">
 		<attribute name="dependency" />
 		<sequential>
@@ -108,6 +93,21 @@
 				</else>
 			</if>
 			<var name="module.dependency.list" value="${concat}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="append-module-list">
+		<sequential>
+			<if>
+				<equals arg1="${module.list}" arg2="" />
+				<then>
+					<var name="concat" value="${src.dir.name}" />
+				</then>
+				<else>
+					<var name="concat" value="${module.list} ${src.dir.name}" />
+				</else>
+			</if>
+			<var name="module.list" value="${concat}" />
 		</sequential>
 	</macrodef>
 
@@ -448,6 +448,6 @@
 			<arg line="${module.classpath.convert}" />
 		</java>
 
-		<!--		<clean-up />-->
+		<clean-up />
 	</target>
 </project>

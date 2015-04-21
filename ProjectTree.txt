@@ -1,0 +1,35 @@
+ant
+deploy-portal-pom depends on
+	deploy-all-module
+		compile-java: compile CreatePOM
+		For loop for all modules
+			deploy-module-pom
+				solve-module-specific-dependencies
+					parser: parse module name
+					append-module-dependency-list
+				java createPOM
+				ivy-convert: makePOM
+				append-ivy-dependency
+					paste in dependencies
+			append-module-list
+	java createPOM: portal POM
+	clean-up: delete ivy directory
+
+java
+main
+	parseArguments: variables easier to use
+	createProjectElement
+		createArtifactElement
+			createParentElementProperties: if not portal
+			createPortalPOM: if portal
+				createPropertiesElement
+				createModuleElement
+				createDependenciesElement
+					createDependencyElement
+				createRepositoriesElement
+					createRepositoryElement
+			createModulePOM: if not portal
+				createBuildElement
+				createDependenciesElement
+					createDependencyElement
+	create the POM file
