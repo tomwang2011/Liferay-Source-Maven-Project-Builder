@@ -326,19 +326,19 @@ public class CreatePOM {
 
 	public static void parseArgument(String[] args) {
 		try {
-			setGroupId(args[0]);
+			_groupId = args[0];
 
-			setArtifactId(args[1]);
+			_artifactId = args[1];
 
-			setVersion(args[2]);
+			_version = args[2];
 
-			setPackaging(args[3]);
+			_packaging = args[3];
 
-			setName(args[4]);
+			_name = args[4];
 
-			setFullPath(args[5]);
+			_fullPath = args[5];
 
-			setPortalDir(args[6]);
+			_portalDir = args[6];
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(
@@ -348,34 +348,6 @@ public class CreatePOM {
 
 			System.exit(1);
 		}
-	}
-
-	public static void setArtifactId(String arg) {
-		_artifactId = arg;
-	}
-
-	public static void setFullPath(String arg) {
-		_fullPath = arg;
-	}
-
-	public static void setGroupId(String arg) {
-		_groupId = arg;
-	}
-
-	public static void setName(String arg) {
-		_name = arg;
-	}
-
-	public static void setPackaging(String arg) {
-		_packaging = arg;
-	}
-
-	public static void setPortalDir(String arg) {
-		_portalDir = arg;
-	}
-
-	public static void setVersion(String arg) {
-		_version = arg;
 	}
 
 	private static String _groupId;
