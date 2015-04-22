@@ -413,6 +413,12 @@
 		</sequential>
 	</macrodef>
 
+	<target name="clean">
+		<delete dir="portal" quiet="true" />
+		<delete dir="classes" quiet="true" />
+		<clean-up />
+	</target>
+
 	<target name="deploy-all-module">
 		<compile-java />
 
