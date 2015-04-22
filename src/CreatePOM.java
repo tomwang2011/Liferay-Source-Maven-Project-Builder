@@ -99,16 +99,22 @@ public class CreatePOM {
 	}
 
 	public static void createDependencyElement(Document document, Element dependenciesElement, int j, String[] args) {
+		String[] dependencyToken = args[j].split(":");
+		String[] artifactIdToken = dependencyToken[dependencyToken.length-1].split("/");
+
 		Element dependencyElement = document.createElement("dependency");
 		Element dependencyGroupIdElement = document.createElement("groupId");
 
-		dependencyGroupIdElement.appendChild(document.createTextNode(_groupId));
+		if(artifactIdToken[0].equals("")) {
+			dependencyGroupIdElement.appendChild(document.createTextNode(_groupId));
+		}
+		else {
+			dependencyGroupIdElement.appendChild(document.createTextNode(dependencyToken[0]));
+		}
 
 		dependencyElement.appendChild(dependencyGroupIdElement);
 
 		Element dependencyArtifactIdElement = document.createElement("artifactId");
-
-		String[] artifactIdToken = args[j].split("/");
 
 		dependencyArtifactIdElement.appendChild(document.createTextNode(
 			artifactIdToken[artifactIdToken.length - 1]));
@@ -117,8 +123,12 @@ public class CreatePOM {
 
 		Element dependencyVersionElement = document.createElement("version");
 
-		dependencyVersionElement.appendChild(document.createTextNode(_version));
-
+		if(artifactIdToken[0].equals("")) {
+			dependencyVersionElement.appendChild(document.createTextNode(_version));
+		}
+		else {
+			dependencyVersionElement.appendChild(document.createTextNode(dependencyToken[1]));
+		}
 		dependencyElement.appendChild(dependencyVersionElement);
 
 		if (artifactIdToken[artifactIdToken.length - 1].endsWith("jar")) {
@@ -130,7 +140,7 @@ public class CreatePOM {
 
 			Element dependencySystemPathElement = document.createElement("systemPath");
 
-			dependencySystemPathElement.appendChild(document.createTextNode(args[j]));
+			dependencySystemPathElement.appendChild(document.createTextNode(dependencyToken[dependencyToken.length-1]));
 
 			dependencyElement.appendChild(dependencySystemPathElement);
 		}

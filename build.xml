@@ -82,15 +82,17 @@
 
 	<macrodef name="append-module-dependency-list">
 		<attribute name="dependency" />
+		<attribute name="group" default="${groupId}" />
+		<attribute name="version" default="${version}" />
 
 		<sequential>
 			<if>
 				<equals arg1="${module.dependency.list}" arg2="" />
 				<then>
-					<var name="concat" value="@{dependency}" />
+					<var name="concat" value="@{group}:@{version}:@{dependency}" />
 				</then>
 				<else>
-					<var name="concat" value="${module.dependency.list} @{dependency}" />
+					<var name="concat" value="${module.dependency.list} @{group}:@{version}:@{dependency}" />
 				</else>
 			</if>
 			<var name="module.dependency.list" value="${concat}" />
@@ -380,6 +382,16 @@
 					<then>
 						<append-module-dependency-list
 							dependency="/liferaysc/portal/lib/development/junit.jar"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="javadoc-formatter" />
+					<then>
+						<append-module-dependency-list
+							dependency="gradle-base-services"
+							group="org.gradle"
+							version="2.0.0"
 						/>
 					</then>
 				</elseif>
