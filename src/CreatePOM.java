@@ -248,9 +248,9 @@ public class CreatePOM {
 		createPropertiesElement(
 			document, portalSourceDirElement, projectElement);
 
-		int i = createModulesElement(document, projectElement);
+		int offset = createModulesElement(document, projectElement);
 
-		createDependenciesElement(document, projectElement, i);
+		createDependenciesElement(document, projectElement, offset);
 
 		createRepositoriesElement(document, projectElement);
 	}
