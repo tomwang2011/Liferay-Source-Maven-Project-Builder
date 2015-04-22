@@ -16,8 +16,7 @@ import org.w3c.dom.Element;
 public class CreatePOM {
 
 	public static void createArtifactElements(
-			Document document, Element projectElement)
-		throws Exception {
+		Element projectElement) throws Exception {
 
 		Element modelVersionElement = document.createElement("modelVersion");
 
@@ -39,8 +38,7 @@ public class CreatePOM {
 				_fullPath));
 		}
 		else {
-			createParentElement(
-				document, projectElement, portalSourceDirElement);
+			createParentElement(projectElement, portalSourceDirElement);
 		}
 
 		Element artifactIdElement = document.createElement("artifactId");
@@ -68,16 +66,15 @@ public class CreatePOM {
 		projectElement.appendChild(nameElement);
 
 		if (_artifactId.equals("portal")) {
-			createPortalPOM(projectElement, portalSourceDirElement, document);
+			createPortalPOM(projectElement, portalSourceDirElement);
 		}
 		else {
-			createModulePOM(projectElement, portalSourceDirElement, document);
+			createModulePOM(projectElement, portalSourceDirElement);
 		}
 	}
 
 	public static void createBuildElement(
-		Document document, Element portalSourceDirElement,
-		Element projectElement) {
+		Element portalSourceDirElement, Element projectElement) {
 
 		Element buildElement = document.createElement("build");
 
@@ -101,21 +98,19 @@ public class CreatePOM {
 	}
 
 	public static void createDependenciesElement(
-		Document document, Element projectElement, int j) {
+		Element projectElement, int offset) {
 
 		Element dependenciesElement = document.createElement("dependencies");
 
 		projectElement.appendChild(dependenciesElement);
 
-		for (int i = j; i < _tokens.length; i++) {
-			createDependencyElement(
-				document, dependenciesElement, _tokens[i]);
+		for (int i = offset; i < _tokens.length; i++) {
+			createDependencyElement(dependenciesElement, _tokens[i]);
 		}
 	}
 
 	public static void createDependencyElement(
-		Document document, Element dependenciesElement,
-		String dependencyToken) {
+		Element dependenciesElement, String dependencyToken) {
 
 		String[] dependencyTokens = dependencyToken.split(":");
 		String[] artifactIdToken =
@@ -179,22 +174,22 @@ public class CreatePOM {
 	}
 
 	public static void createModulePOM(
-		Element projectElement, Element portalSourceDirElement,
-		Document document) {
+		Element projectElement, Element portalSourceDirElement) {
 
-		createBuildElement(document, portalSourceDirElement, projectElement);
+		createBuildElement(portalSourceDirElement, projectElement);
 
-		createDependenciesElement(document, projectElement, 1);
+		createDependenciesElement(projectElement, 1);
 	}
 
 	public static int createModulesElement(
-		Document document, Element projectElement) {
+		Element projectElement) {
 
 		Element modulesElement = document.createElement("modules");
 
 		projectElement.appendChild(modulesElement);
 
 		int i = 0;
+
 		while (!_tokens[i].substring(0, 1).equals("/")) {
 			Element moduleElement = document.createElement("module");
 
@@ -209,8 +204,7 @@ public class CreatePOM {
 	}
 
 	public static void createParentElement(
-		Document document, Element projectElement,
-		Element portalSourceDirElement) {
+		Element projectElement, Element portalSourceDirElement) {
 
 		Element parent = document.createElement("parent");
 
@@ -241,21 +235,19 @@ public class CreatePOM {
 	}
 
 	public static void createPortalPOM(
-			Element projectElement, Element portalSourceDirElement,
-			Document document)
+			Element projectElement, Element portalSourceDirElement)
 		throws Exception {
 
-		createPropertiesElement(
-			document, portalSourceDirElement, projectElement);
+		createPropertiesElement(portalSourceDirElement, projectElement);
 
-		int offset = createModulesElement(document, projectElement);
+		int offset = createModulesElement(projectElement);
 
-		createDependenciesElement(document, projectElement, offset);
+		createDependenciesElement(projectElement, offset);
 
-		createRepositoriesElement(document, projectElement);
+		createRepositoriesElement(projectElement);
 	}
 
-	public static void createProjectElement(Document document)
+	public static void createProjectElement()
 		throws Exception {
 
 		Element projectElement = document.createElement("project");
@@ -272,12 +264,11 @@ public class CreatePOM {
 			"http://maven.apache.org/POM/4.0.0 "
 			+ "http://maven.apache.org/maven-v4_0_0.xsd");
 
-		createArtifactElements(document, projectElement);
+		createArtifactElements(projectElement);
 	}
 
 	public static void createPropertiesElement(
-		Document document, Element portalSourceDirElement,
-		Element projectElement) {
+		Element portalSourceDirElement, Element projectElement) {
 
 		Element propertiesElement = document.createElement("properties");
 
@@ -301,7 +292,7 @@ public class CreatePOM {
 	}
 
 	public static void createRepositoriesElement(
-			Document document, Element projectElement)
+			Element projectElement)
 		throws Exception {
 
 		Element repositoriesElement = document.createElement("repositories");
@@ -309,16 +300,16 @@ public class CreatePOM {
 		projectElement.appendChild(repositoriesElement);
 
 		createRepositoryElement(
-			repositoriesElement, document, "com.liferay.liferay-ce",
+			repositoriesElement, "com.liferay.liferay-ce",
 			"https://repository.liferay.com/nexus/content/groups/liferay-ce/");
 
 		createRepositoryElement(
-			repositoriesElement, document, "public",
+			repositoriesElement, "public",
 			"https://repository.liferay.com/nexus/content/groups/public/");
 	}
 
 	public static void createRepositoryElement(
-			Element repositoriesElement, Document document, String repoId,
+			Element repositoriesElement, String repoId,
 			String repoUrl)
 		throws Exception {
 
@@ -350,9 +341,9 @@ public class CreatePOM {
 		DocumentBuilder documentBuilder =
 			documentBuilderFactory.newDocumentBuilder();
 
-		Document document = documentBuilder.newDocument();
+		document = documentBuilder.newDocument();
 
-		createProjectElement(document);
+		createProjectElement();
 
 		TransformerFactory transformerFactory =
 			TransformerFactory.newInstance();
@@ -403,6 +394,7 @@ public class CreatePOM {
 		}
 	}
 
+	private static Document document;
 	private static String _artifactId;
 	private static String _fullPath;
 	private static String _groupId;
