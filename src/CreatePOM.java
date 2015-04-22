@@ -101,13 +101,13 @@ public class CreatePOM {
 	}
 
 	public static void createDependenciesElement(
-		Document document, Element projectElement) {
+		Document document, Element projectElement, int j) {
 
 		Element dependenciesElement = document.createElement("dependencies");
 
 		projectElement.appendChild(dependenciesElement);
 
-		for (int i = 1; i < _tokens.length; i++) {
+		for (int i = j; i < _tokens.length; i++) {
 			createDependencyElement(
 				document, dependenciesElement, _tokens[i]);
 		}
@@ -184,7 +184,7 @@ public class CreatePOM {
 
 		createBuildElement(document, portalSourceDirElement, projectElement);
 
-		createDependenciesElement(document, projectElement);
+		createDependenciesElement(document, projectElement, 1);
 	}
 
 	public static int createModulesElement(
@@ -248,9 +248,9 @@ public class CreatePOM {
 		createPropertiesElement(
 			document, portalSourceDirElement, projectElement);
 
-		createModulesElement(document, projectElement);
+		int i = createModulesElement(document, projectElement);
 
-		createDependenciesElement(document, projectElement);
+		createDependenciesElement(document, projectElement, i);
 
 		createRepositoriesElement(document, projectElement);
 	}
