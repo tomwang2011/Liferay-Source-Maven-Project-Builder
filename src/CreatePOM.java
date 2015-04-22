@@ -1,6 +1,8 @@
 
 import java.io.File;
+
 import java.util.Arrays;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -11,7 +13,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 public class CreatePOM {
 
 	public static void createArtifactElements(
@@ -24,8 +25,8 @@ public class CreatePOM {
 
 		projectElement.appendChild(modelVersionElement);
 
-		Element portalSourceDirElement
-			= document.createElement("sourceDirectory");
+		Element portalSourceDirElement = document.createElement(
+			"sourceDirectory");
 
 		if (_artifactId.equals("portal")) {
 			Element groupId = document.createElement("groupId");
@@ -34,10 +35,12 @@ public class CreatePOM {
 
 			projectElement.appendChild(groupId);
 
-			portalSourceDirElement.appendChild(document.createTextNode(_fullPath));
+			portalSourceDirElement.appendChild(document.createTextNode(
+				_fullPath));
 		}
 		else {
-			createParentElement(document, projectElement, portalSourceDirElement);
+			createParentElement(
+				document, projectElement, portalSourceDirElement);
 		}
 
 		Element artifactIdElement = document.createElement("artifactId");
@@ -68,11 +71,14 @@ public class CreatePOM {
 			createPortalPOM(projectElement, portalSourceDirElement, document);
 		}
 		else {
-			createModulePOM(projectElement, portalSourceDirElement,	document);
+			createModulePOM(projectElement, portalSourceDirElement, document);
 		}
 	}
 
-	public static void createBuildElement(Document document, Element portalSourceDirElement, Element projectElement) {
+	public static void createBuildElement(
+		Document document, Element portalSourceDirElement,
+		Element projectElement) {
+
 		Element buildElement = document.createElement("build");
 
 		projectElement.appendChild(buildElement);
@@ -80,13 +86,15 @@ public class CreatePOM {
 		buildElement.appendChild(portalSourceDirElement);
 
 		if (_artifactId.endsWith("-test")) {
-			Element testSourceDirElement = document.createElement("testSourceDirectory");
+			Element testSourceDirElement = document.createElement(
+				"testSourceDirectory");
 
 			String path = _fullPath.substring(_tokens[0].length());
 
 			path = path.substring(0, path.length() - 3) + "test";
 
-			testSourceDirElement.appendChild(document.createTextNode("${sourceDirectory}" + path));
+			testSourceDirElement.appendChild(document.createTextNode(
+				"${sourceDirectory}" + path));
 
 			buildElement.appendChild(testSourceDirElement);
 		}
@@ -116,8 +124,9 @@ public class CreatePOM {
 		Element dependencyElement = document.createElement("dependency");
 		Element dependencyGroupIdElement = document.createElement("groupId");
 
-		if(artifactIdToken[0].equals("")) {
-			dependencyGroupIdElement.appendChild(document.createTextNode(_groupId));
+		if (artifactIdToken[0].equals("")) {
+			dependencyGroupIdElement.appendChild(document.createTextNode(
+				_groupId));
 		}
 		else {
 			dependencyGroupIdElement.appendChild(document.createTextNode(
@@ -126,17 +135,20 @@ public class CreatePOM {
 
 		dependencyElement.appendChild(dependencyGroupIdElement);
 
-		Element dependencyArtifactIdElement = document.createElement("artifactId");
+		Element dependencyArtifactIdElement = document.createElement(
+			"artifactId");
 
-		dependencyArtifactIdElement.appendChild(document.createTextNode(
-			artifactIdToken[artifactIdToken.length - 1]));
+		dependencyArtifactIdElement.appendChild(
+			document.createTextNode(
+				artifactIdToken[artifactIdToken.length - 1]));
 
 		dependencyElement.appendChild(dependencyArtifactIdElement);
 
 		Element dependencyVersionElement = document.createElement("version");
 
-		if(artifactIdToken[0].equals("")) {
-			dependencyVersionElement.appendChild(document.createTextNode(_version));
+		if (artifactIdToken[0].equals("")) {
+			dependencyVersionElement.appendChild(document.createTextNode(
+				_version));
 		}
 		else {
 			dependencyVersionElement.appendChild(document.createTextNode(
@@ -148,14 +160,17 @@ public class CreatePOM {
 		if (artifactIdToken[artifactIdToken.length - 1].endsWith("jar")) {
 			Element dependencyScopeElement = document.createElement("scope");
 
-			dependencyScopeElement.appendChild(document.createTextNode("system"));
+			dependencyScopeElement.appendChild(document.createTextNode(
+				"system"));
 
 			dependencyElement.appendChild(dependencyScopeElement);
 
-			Element dependencySystemPathElement = document.createElement("systemPath");
+			Element dependencySystemPathElement = document.createElement(
+				"systemPath");
 
-			dependencySystemPathElement.appendChild(document.createTextNode(
-				dependencyTokens[dependencyTokens.length-1]));
+			dependencySystemPathElement.appendChild(
+				document.createTextNode(
+					dependencyTokens[dependencyTokens.length-1]));
 
 			dependencyElement.appendChild(dependencySystemPathElement);
 		}
@@ -164,14 +179,13 @@ public class CreatePOM {
 	}
 
 	public static void createModulePOM(
-		Element projectElement, Element portalSourceDirElement, 
+		Element projectElement, Element portalSourceDirElement,
 		Document document) {
 
 		createBuildElement(document, portalSourceDirElement, projectElement);
 
 		createDependenciesElement(document, projectElement);
 	}
-
 
 	public static int createModulesElement(
 		Document document, Element projectElement) {
@@ -227,7 +241,7 @@ public class CreatePOM {
 	}
 
 	public static void createPortalPOM(
-			Element projectElement,	Element portalSourceDirElement,
+			Element projectElement, Element portalSourceDirElement,
 			Document document)
 		throws Exception {
 
@@ -248,7 +262,8 @@ public class CreatePOM {
 
 		document.appendChild(projectElement);
 
-		projectElement.setAttribute("xmlns", "http://maven.apache.org/POM/4.0.0");
+		projectElement.setAttribute(
+			"xmlns", "http://maven.apache.org/POM/4.0.0");
 		projectElement.setAttribute(
 			"xmlns:xsi",
 			"http://www.w3.org/2001/XMLSchema-instance");
@@ -260,40 +275,51 @@ public class CreatePOM {
 		createArtifactElements(document, projectElement);
 	}
 
-	public static void createPropertiesElement(Document document, Element portalSourceDirElement, Element projectElement) {
+	public static void createPropertiesElement(
+		Document document, Element portalSourceDirElement,
+		Element projectElement) {
+
 		Element propertiesElement = document.createElement("properties");
 
 		projectElement.appendChild(propertiesElement);
 
 		propertiesElement.appendChild(portalSourceDirElement);
 
-		Element compilerSourceElement = document.createElement("maven.compiler.source");
+		Element compilerSourceElement = document.createElement(
+			"maven.compiler.source");
 
 		compilerSourceElement.appendChild(document.createTextNode("1.7"));
 
 		propertiesElement.appendChild(compilerSourceElement);
 
-		Element compilerTargetElement = document.createElement("maven.compiler.target");
+		Element compilerTargetElement = document.createElement(
+			"maven.compiler.target");
 
 		compilerTargetElement.appendChild(document.createTextNode("1.7"));
 
 		propertiesElement.appendChild(compilerTargetElement);
 	}
 
-	public static void createRepositoriesElement(Document document, Element projectElement) throws Exception {
+	public static void createRepositoriesElement(
+			Document document, Element projectElement)
+		throws Exception {
+
 		Element repositoriesElement = document.createElement("repositories");
 
 		projectElement.appendChild(repositoriesElement);
 
-		createRepositoryElement(repositoriesElement, document, "com.liferay.liferay-ce",
+		createRepositoryElement(
+			repositoriesElement, document, "com.liferay.liferay-ce",
 			"https://repository.liferay.com/nexus/content/groups/liferay-ce/");
 
-		createRepositoryElement(repositoriesElement, document, "public",
+		createRepositoryElement(
+			repositoriesElement, document, "public",
 			"https://repository.liferay.com/nexus/content/groups/public/");
 	}
 
 	public static void createRepositoryElement(
-		Element repositoriesElement, Document document, String repoId, String repoUrl)
+			Element repositoriesElement, Document document, String repoId,
+			String repoUrl)
 		throws Exception {
 
 		Element repositoryElement = document.createElement("repository");
@@ -318,18 +344,18 @@ public class CreatePOM {
 	public static void main(String[] args) throws Exception {
 		parseArgument(args);
 
-		DocumentBuilderFactory documentBuilderFactory
-			= DocumentBuilderFactory.newInstance();
+		DocumentBuilderFactory documentBuilderFactory =
+			DocumentBuilderFactory.newInstance();
 
-		DocumentBuilder documentBuilder
-			= documentBuilderFactory.newDocumentBuilder();
+		DocumentBuilder documentBuilder =
+			documentBuilderFactory.newDocumentBuilder();
 
 		Document document = documentBuilder.newDocument();
 
 		createProjectElement(document);
 
-		TransformerFactory transformerFactory
-			= TransformerFactory.newInstance();
+		TransformerFactory transformerFactory =
+			TransformerFactory.newInstance();
 
 		Transformer transformer = transformerFactory.newTransformer();
 
@@ -377,12 +403,12 @@ public class CreatePOM {
 		}
 	}
 
-	private static String _groupId;
 	private static String _artifactId;
-	private static String _version;
-	private static String _packaging;
-	private static String _name;
 	private static String _fullPath;
+	private static String _groupId;
+	private static String _name;
+	private static String _packaging;
 	private static String[] _tokens;
+	private static String _version;
 
 }
