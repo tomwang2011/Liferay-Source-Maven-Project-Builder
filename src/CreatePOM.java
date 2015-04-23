@@ -306,6 +306,10 @@ public class CreatePOM {
 		createRepositoryElement(
 			repositoriesElement, "public",
 			"https://repository.liferay.com/nexus/content/groups/public/");
+
+		createRepositoryElement(
+			repositoriesElement, "spring-releases",
+			"http://repo.spring.io/libs-release-remote/");
 	}
 
 	public static void createRepositoryElement(
