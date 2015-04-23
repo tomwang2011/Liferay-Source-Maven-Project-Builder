@@ -276,6 +276,24 @@
 					</then>
 				</elseif>
 				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="cobertura-agent" />
+					<then>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/cobertura.jar"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="javadoc-formatter" />
+					<then>
+						<append-module-dependency-list
+							dependency="gradle-base-services"
+							group="org.gradle"
+							version="2.0"
+						/>
+					</then>
+				</elseif>
+				<elseif>
 					<equals arg1="@{src.dir.name}" arg2="journal-content-web" />
 					<then>
 						<append-module-dependency-list
@@ -284,51 +302,10 @@
 					</then>
 				</elseif>
 				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="portal-ldap" />
+					<equals arg1="@{src.dir.name}" arg2="portal-bootstrap" />
 					<then>
 						<append-module-dependency-list
-							dependency="portal-authenticator-ldap"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="portal-tools-sample-sql-builder" />
-					<then>
-						<append-module-dependency-list
-							dependency="journal-web"
-						/>
-						<append-module-dependency-list
-							dependency="wiki-service"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<or>
-						<equals arg1="@{src.dir.name}" arg2="util-bridges" />
-						<equals arg1="@{src.dir.name}" arg2="support-resin" />
-					</or>
-					<then>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/resin.jar"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="support-tomcat" />
-					<then>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/catalina.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/jasper.jar"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="cobertura-agent" />
-					<then>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/cobertura.jar"
+							dependency="registry-impl"
 						/>
 					</then>
 				</elseif>
@@ -362,6 +339,14 @@
 					</then>
 				</elseif>
 				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="portal-ldap" />
+					<then>
+						<append-module-dependency-list
+							dependency="portal-authenticator-ldap"
+						/>
+					</then>
+				</elseif>
+				<elseif>
 					<equals arg1="@{src.dir.name}" arg2="portal-servlet-jsp-compiler" />
 					<then>
 						<append-module-dependency-list
@@ -370,28 +355,10 @@
 					</then>
 				</elseif>
 				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="portal-bootstrap" />
-					<then>
-						<append-module-dependency-list
-							dependency="registry-impl"
-						/>
-					</then>
-				</elseif>
-				<elseif>
 					<equals arg1="@{src.dir.name}" arg2="portal-test" />
 					<then>
 						<append-module-dependency-list
 							dependency="/liferaysc/portal/lib/development/junit.jar"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="javadoc-formatter" />
-					<then>
-						<append-module-dependency-list
-							dependency="gradle-base-services"
-							group="org.gradle"
-							version="2.0"
 						/>
 					</then>
 				</elseif>
@@ -406,6 +373,39 @@
 						/>
 						<append-module-dependency-list
 							dependency="portal-test"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="portal-tools-sample-sql-builder" />
+					<then>
+						<append-module-dependency-list
+							dependency="journal-web"
+						/>
+						<append-module-dependency-list
+							dependency="wiki-service"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<or>
+						<equals arg1="@{src.dir.name}" arg2="support-resin" />
+						<equals arg1="@{src.dir.name}" arg2="util-bridges" />
+					</or>
+					<then>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/resin.jar"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="support-tomcat" />
+					<then>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/catalina.jar"
+						/>
+						<append-module-dependency-list
+							dependency="/liferaysc/portal/lib/development/jasper.jar"
 						/>
 					</then>
 				</elseif>
