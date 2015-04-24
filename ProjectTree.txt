@@ -4,13 +4,13 @@ deploy-portal-pom depends on
 		compile-java: compile CreatePOM
 		For loop for all modules
 			deploy-module-pom
-				solve-module-specific-dependencies
+				solve-module-specific-dependencies (using if-elseif)
 					parser: parse module name
 					append-module-dependency-list
 				java createPOM
 				ivy-convert: makePOM
 				append-ivy-dependency
-					paste in dependencies
+					paste in dependencies (using replace)
 			append-module-list
 	java createPOM: portal POM
 	clean-up: delete ivy directory
@@ -22,7 +22,7 @@ main
 		createArtifactElement
 			createParentElementProperties: if not portal
 			createPortalPOM: if portal
-				createPropertiesElement
+				createPropertiesElement: setting compiler version
 				createModuleElement
 				createDependenciesElement
 					createDependencyElement
