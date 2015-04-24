@@ -247,6 +247,20 @@
 				</elseif>
 				<elseif>
 					<and>
+						<available file="${project.dir}/${module.name}-api" type="dir" />
+						<not>
+							<available file="${project.dir}/${module.name}-service" type="dir" />
+						</not>
+						<equals arg1="${module.extension}" arg2="-web" />
+					</and>
+					<then>
+						<append-module-dependency-list
+							dependency="${module.name}-api"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<and>
 						<available file="${project.dir}/${module.name}-web" type="dir" />
 						<equals arg1="${module.extension}" arg2="-test" />
 					</and>
@@ -289,6 +303,17 @@
 							dependency="gradle-base-services"
 							group="org.gradle"
 							version="2.0"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="dynamic-data-lists-form-web" />
+					<then>
+						<append-module-dependency-list
+							dependency="dynamic-data-mapping-form-renderer"
+						/>
+						<append-module-dependency-list
+							dependency="dynamic-data-mapping-form-values-factory"
 						/>
 					</then>
 				</elseif>
@@ -405,6 +430,14 @@
 						/>
 						<append-module-dependency-list
 							dependency="/liferaysc/portal/lib/development/jasper.jar"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="@{src.dir.name}" arg2="wiki-item-selector-web" />
+					<then>
+						<append-module-dependency-list
+							dependency="item-selector-web"
 						/>
 					</then>
 				</elseif>
