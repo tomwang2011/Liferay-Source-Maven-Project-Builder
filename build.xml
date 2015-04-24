@@ -199,7 +199,6 @@
 					<dirname property="src.dir" file="${temp}" />
 
 					<var name="temp" unset="true" />
-
 					<var name="src.dir.name" unset="true" />
 
 					<basename property="src.dir.name" file="${src.dir}" />
