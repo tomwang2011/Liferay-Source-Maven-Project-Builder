@@ -298,94 +298,22 @@
 						/>
 					</then>
 				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="dynamic-data-lists-form-web" />
-					<then>
-						<append-module-dependency-list
-							dependency="dynamic-data-mapping-form-renderer"
-						/>
-						<append-module-dependency-list
-							dependency="dynamic-data-mapping-form-values-factory"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="portal-impl" />
-					<then>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/deployment.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/qdox.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/jetty-server.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/jetty-util.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/spring-test.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/jalopy.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/derbytools.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/org.freemarker-2.3.17.LIFERAY-PATCHED-1.jar"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="portal-test-internal" />
-					<then>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/spring-test.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/dumbster.jar"
-						/>
-						<append-module-dependency-list
-							dependency="portal-test"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="portal-tools-sample-sql-builder" />
-					<then>
-						<append-module-dependency-list
-							dependency="journal-web"
-						/>
-						<append-module-dependency-list
-							dependency="wiki-service"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="support-tomcat" />
-					<then>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/catalina.jar"
-						/>
-						<append-module-dependency-list
-							dependency="/liferaysc/portal/lib/development/jasper.jar"
-						/>
-					</then>
-				</elseif>
 			</if>
 
-			<property file="dependencies.properties" prefix="individual.dependency." />
-			<propertyselector property="individual.dependencies" match="individual\.dependency\.(.*)" select="\1" />
-			<for list="${individual.dependencies}" param="module.name">
+			<property file="dependencies.properties" prefix="appender." />
+			<propertyselector property="appenders" match="appender\.(.*)" select="\1" />
+			<for list="${appenders}" param="module.name">
 				<sequential>
 					<if>
 						<equals arg1="@{src.dir.name}" arg2="@{module.name}" />
 						<then>
-							<append-module-dependency-list
-							dependency="${individual.dependency.@{module.name}}"
-							/>
+							<for list="${appender.@{module.name}}" param="dependency" delimiter=";">
+								<sequential>
+									<append-module-dependency-list
+									dependency="@{dependency}"
+									/>
+								</sequential>
+							</for>
 						</then>
 					</if>
 				</sequential>
