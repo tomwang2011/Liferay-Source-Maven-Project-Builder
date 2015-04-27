@@ -32,7 +32,7 @@
 		var index = module.lastIndexOf(splitter);
 		if (index == -1) index = module.length()-1;
 		project.setProperty(attributes.get("property"), module.substring(0, index));
-		project.setProperty(attributes.get("extension"), module.substring(index, module.length()));
+		project.setProperty(attributes.get("extension"), module.substring(index+1, module.length()));
 		]]>
 	</scriptdef>
 
@@ -218,11 +218,11 @@
 				<or>
 					<and>
 						<available file="${project.dir}/${module.name}-api" type="dir" />
-						<equals arg1="${module.extension}" arg2="-service" />
+						<equals arg1="${module.extension}" arg2="service" />
 					</and>
 					<and>
 						<available file="${project.dir}/${module.name}-api" type="dir" />
-						<equals arg1="${module.extension}" arg2="-impl" />
+						<equals arg1="${module.extension}" arg2="impl" />
 					</and>
 				</or>
 				<then>
@@ -233,7 +233,7 @@
 				<elseif>
 					<and>
 						<available file="${project.dir}/${module.name}-api" type="dir" />
-						<equals arg1="${module.extension}" arg2="-web" />
+						<equals arg1="${module.extension}" arg2="web" />
 					</and>
 					<then>
 						<append-module-dependency-list
@@ -254,7 +254,7 @@
 				<elseif>
 					<and>
 						<available file="${project.dir}/${module.name}-web" type="dir" />
-						<equals arg1="${module.extension}" arg2="-test" />
+						<equals arg1="${module.extension}" arg2="test" />
 					</and>
 					<then>
 						<append-module-dependency-list
@@ -262,16 +262,6 @@
 						/>
 						<append-module-dependency-list
 							dependency="portal-test-internal"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="@{src.dir.name}" arg2="javadoc-formatter" />
-					<then>
-						<append-module-dependency-list
-							dependency="gradle-base-services"
-							group="org.gradle"
-							version="2.0"
 						/>
 					</then>
 				</elseif>
@@ -289,7 +279,33 @@
 							<for list="${appender.@{module.name}}" param="dependency" delimiter=";">
 								<sequential>
 									<append-module-dependency-list
-									dependency="@{dependency}"
+										dependency="@{dependency}"
+									/>
+								</sequential>
+							</for>
+						</then>
+					</if>
+				</sequential>
+			</for>
+
+			<property file="ext-dependencies.properties" prefix="appender.ext." />
+
+			<propertyselector property="appenders.ext" match="appender\.ext\.(.*)" select="\1" />
+
+			<for list="${appenders.ext}" param="module.name">
+				<sequential>
+					<if>
+						<equals arg1="@{src.dir.name}" arg2="@{module.name}" />
+						<then>
+							<for list="${appender.ext.@{module.name}}" param="dependency" delimiter=";">
+								<sequential>
+									<parser module="@{dependency}" splitter=":" property="tmp" extension="dep.artifactId" />
+									<parser module="${tmp}" splitter=":" property="dep.groupId" extension="dep.version" />
+
+									<append-module-dependency-list
+										dependency="${dep.artifactId}"
+										group="${dep.groupId}"
+										version="${dep.version}"
 									/>
 								</sequential>
 							</for>
