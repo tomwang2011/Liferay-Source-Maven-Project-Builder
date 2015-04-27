@@ -80,7 +80,7 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="append-module-dependency-list">
+	<macrodef name="append-dependency-list">
 		<attribute name="dependency" />
 		<attribute name="group" default="${groupId}" />
 		<attribute name="version" default="${version}" />
@@ -226,7 +226,7 @@
 					</and>
 				</or>
 				<then>
-					<append-module-dependency-list
+					<append-dependency-list
 						dependency="${module.name}-api"
 					/>
 				</then>
@@ -236,7 +236,7 @@
 						<equals arg1="${module.extension}" arg2="web" />
 					</and>
 					<then>
-						<append-module-dependency-list
+						<append-dependency-list
 							dependency="${module.name}-api"
 						/>
 
@@ -244,7 +244,7 @@
 							<available file="${project.dir}/${module.name}-service" type="dir" />
 
 							<then>
-								<append-module-dependency-list
+								<append-dependency-list
 								dependency="${module.name}-service"
 							/>
 							</then>
@@ -257,10 +257,10 @@
 						<equals arg1="${module.extension}" arg2="test" />
 					</and>
 					<then>
-						<append-module-dependency-list
+						<append-dependency-list
 							dependency="${module.name}-web"
 						/>
-						<append-module-dependency-list
+						<append-dependency-list
 							dependency="portal-test-internal"
 						/>
 					</then>
@@ -278,7 +278,7 @@
 						<then>
 							<for list="${appender.@{module.name}}" param="dependency" delimiter=";">
 								<sequential>
-									<append-module-dependency-list
+									<append-dependency-list
 										dependency="@{dependency}"
 									/>
 								</sequential>
@@ -302,7 +302,7 @@
 									<parser module="@{dependency}" splitter=":" property="tmp" extension="dep.artifactId" />
 									<parser module="${tmp}" splitter=":" property="dep.groupId" extension="dep.version" />
 
-									<append-module-dependency-list
+									<append-dependency-list
 										dependency="${dep.artifactId}"
 										group="${dep.groupId}"
 										version="${dep.version}"
