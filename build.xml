@@ -233,30 +233,22 @@
 				<elseif>
 					<and>
 						<available file="${project.dir}/${module.name}-api" type="dir" />
-						<available file="${project.dir}/${module.name}-service" type="dir" />
 						<equals arg1="${module.extension}" arg2="-web" />
 					</and>
 					<then>
 						<append-module-dependency-list
 							dependency="${module.name}-api"
 						/>
-						<append-module-dependency-list
-							dependency="${module.name}-service"
-						/>
-					</then>
-				</elseif>
-				<elseif>
-					<and>
-						<available file="${project.dir}/${module.name}-api" type="dir" />
-						<not>
+
+						<if>
 							<available file="${project.dir}/${module.name}-service" type="dir" />
-						</not>
-						<equals arg1="${module.extension}" arg2="-web" />
-					</and>
-					<then>
-						<append-module-dependency-list
-							dependency="${module.name}-api"
-						/>
+
+							<then>
+								<append-module-dependency-list
+								dependency="${module.name}-service"
+							/>
+							</then>
+						</if>
 					</then>
 				</elseif>
 				<elseif>
@@ -274,21 +266,6 @@
 					</then>
 				</elseif>
 				<elseif>
-					<and>
-						<available file="${project.dir}/${module.name}-factory" type="dir" />
-						<equals arg1="${module.extension}" arg2="-factory" />
-					</and>
-					<then>
-						<var name="temp.property" value="${module.name}" />
-
-						<parser module="${temp.property}" splitter="-" property="module.name" extension="module.extension" />
-
-						<append-module-dependency-list
-							dependency="${module.name}-renderer"
-						/>
-					</then>
-				</elseif>
-				<elseif>
 					<equals arg1="@{src.dir.name}" arg2="javadoc-formatter" />
 					<then>
 						<append-module-dependency-list
@@ -301,7 +278,9 @@
 			</if>
 
 			<property file="dependencies.properties" prefix="appender." />
+
 			<propertyselector property="appenders" match="appender\.(.*)" select="\1" />
+
 			<for list="${appenders}" param="module.name">
 				<sequential>
 					<if>
