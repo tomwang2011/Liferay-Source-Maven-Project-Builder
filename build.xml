@@ -111,32 +111,11 @@
 			<if>
 				<available file="ivytopom/${src.dir.name}/pom.xml" />
 				<then>
-					<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
-						<filterchain>
-							<headfilter lines="-1" skip="15" />
-						</filterchain>
-					</loadfile>
-					<if>
-						<isset property="dependency-set" />
-						<then>
-							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
-								<replacetoken><![CDATA[  </dependencies>
-</project>]]></replacetoken>
-							</replace>
-
-							<var name="dependency-set" unset="true" />
-
-							<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
-								<filterchain>
-									<headfilter lines="-1" skip="14" />
-								</filterchain>
-							</loadfile>
-							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
-								<replacetoken><![CDATA[  <dependencies/>
-</project>]]></replacetoken>
-							</replace>
-						</then>
-					</if>
+					<echo>******${src.dir.name}***</echo>
+					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" prefix="ivyToPom" collapseAttributes="true" semanticAttributes="true" />
+<!--					<echoproperties />-->
+					<var name="ivy-module-dependency" value="${ivyToPom.project.dependencies.dependency.artifactId}:${ivyToPom.project.dependencies.dependency.groupId}:${ivyToPom.project.dependencies.dependency.version}:${ivyToPom.project.dependencies.dependency.scope}" />
+					<echo>*${ivy-module-dependency}</echo>
 				</then>
 			</if>
 
@@ -209,6 +188,13 @@
 
 			<ivy-convert />
 
+			<if>
+				<equals arg1="@{src.dir.name}" arg2="bookmarks-service" />
+				<then>
+					<append-parsed-ivy-dependency />
+				</then>
+			</if>
+
 			<append-ivy-dependency />
 		</sequential>
 	</macrodef>
@@ -226,7 +212,6 @@
 						<mapping conf="runtime" scope="runtime" />
 						<mapping conf="test" scope="test" />
 					</ivy:makepom>
-					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" collapseAttributes="true" />
 				</then>
 			</if>
 		</sequential>
