@@ -87,15 +87,22 @@
 
 		<sequential>
 			<if>
-				<equals arg1="${module.dependency.list}" arg2="" />
+				<not>
+					<equals arg1="@{dependency}" arg2="" />
+				</not>
 				<then>
-					<var name="concat" value="@{group}:@{version}:@{dependency}" />
+					<if>
+						<equals arg1="${module.dependency.list}" arg2="" />
+						<then>
+							<var name="concat" value="@{group}:@{version}:@{dependency}" />
+						</then>
+						<else>
+							<var name="concat" value="${module.dependency.list} @{group}:@{version}:@{dependency}" />
+						</else>
+					</if>
+					<var name="module.dependency.list" value="${concat}" />
 				</then>
-				<else>
-					<var name="concat" value="${module.dependency.list} @{group}:@{version}:@{dependency}" />
-				</else>
 			</if>
-			<var name="module.dependency.list" value="${concat}" />
 		</sequential>
 	</macrodef>
 
@@ -133,10 +140,15 @@
 	</macrodef>
 
 	<macrodef name="deploy-module-pom">
-		<attribute name="src.dir.name" />
 		<attribute name="module" />
+		<attribute name="src.dir.name" />
 
 		<sequential>
+			<parse-build-files
+				module="@{module}"
+				src.dir.name="@{src.dir.name}"
+			/>
+
 			<solve-module-specific-dependencies
 				src.dir.name="@{src.dir.name}"
 			/>
@@ -171,6 +183,7 @@
 					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" conf="default, internal, provided, runtime, test">
 						<mapping conf="default" scope="compile" />
 						<mapping conf="internal" scope="compile" />
+						<mapping conf="master" scope="master" />
 						<mapping conf="provided" scope="provided" />
 						<mapping conf="runtime" scope="runtime" />
 						<mapping conf="test" scope="test" />
@@ -178,6 +191,60 @@
 					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" collapseAttributes="true" />
 				</then>
 			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="parse-build-files">
+		<attribute name="src.dir.name" />
+		<attribute name="module" />
+		<sequential>
+			<if>
+				<available file="@{module}/../build.xml" />
+				<then>
+					<xmlproperty file="@{module}/../build.xml" collapseAttributes="true" semanticAttributes="false" />
+				</then>
+				<elseif>
+					<available file="@{module}/../../../build.xml" />
+					<then>
+						<xmlproperty file="@{module}/../../../build.xml" collapseAttributes="true" semanticAttributes="false" />
+					</then>
+				</elseif>
+			</if>
+
+			<for list="${project.property.name}" param="name">
+				<sequential>
+					<if>
+						<equals arg1="@{name}" arg2="import.shared" />
+						<then>
+							<for list="${project.property.value}" param="value">
+								<sequential>
+
+									<parser module="@{value}" splitter="/" property="value.directory" extension="value.dependency" />
+									<if>
+										<available file="${project.dir}/@{value}" type="dir" />
+										<then>
+											<append-dependency-list
+												dependency="@{value}"
+											/>
+										</then>
+										<elseif>
+											<available file="${project.dir}/${value.dependency}" type="dir" />
+											<then>
+												<append-dependency-list
+													dependency="${value.dependency}"
+												/>
+											</then>
+										</elseif>
+									</if>
+								</sequential>
+							</for>
+						</then>
+					</if>
+				</sequential>
+			</for>
+
+			<var name="project.property.name" unset="true" />
+			<var name="project.property.value" unset="true" />
 		</sequential>
 	</macrodef>
 
@@ -213,45 +280,7 @@
 
 		<sequential>
 			<parser module="@{src.dir.name}" splitter="-" property="module.name" extension="module.extension" />
-
-			<if>
-				<or>
-					<and>
-						<available file="${project.dir}/${module.name}-api" type="dir" />
-						<equals arg1="${module.extension}" arg2="service" />
-					</and>
-					<and>
-						<available file="${project.dir}/${module.name}-api" type="dir" />
-						<equals arg1="${module.extension}" arg2="impl" />
-					</and>
-				</or>
-				<then>
-					<append-dependency-list
-						dependency="${module.name}-api"
-					/>
-				</then>
-				<elseif>
-					<and>
-						<available file="${project.dir}/${module.name}-api" type="dir" />
-						<equals arg1="${module.extension}" arg2="web" />
-					</and>
-					<then>
-						<append-dependency-list
-							dependency="${module.name}-api"
-						/>
-
-						<if>
-							<available file="${project.dir}/${module.name}-service" type="dir" />
-
-							<then>
-								<append-dependency-list
-								dependency="${module.name}-service"
-							/>
-							</then>
-						</if>
-					</then>
-				</elseif>
-				<elseif>
+				<if>
 					<and>
 						<available file="${project.dir}/${module.name}-web" type="dir" />
 						<equals arg1="${module.extension}" arg2="test" />
@@ -264,7 +293,6 @@
 							dependency="portal-test-internal"
 						/>
 					</then>
-				</elseif>
 			</if>
 
 			<property file="dependencies.properties" prefix="appender." />
@@ -341,12 +369,33 @@
 					<then>
 						<mkdir dir="${project.dir}/${src.dir.name}" />
 
+						<append-module-list />
+					</then>
+				</if>
+
+				<var name="src.dir" unset="true" />
+				<var name="src.dir.name" unset="true" />
+			</sequential>
+		</for>
+
+		<for param="module">
+			<path>
+				<dirset dir="${portal.dir}">
+					<include name="**/src"/>
+				</dirset>
+			</path>
+			<sequential>
+				<set-module-source-directory
+					module="@{module}"
+				/>
+
+				<if>
+					<available file="${src.dir}/build.xml" />
+					<then>
 						<deploy-module-pom
 							src.dir.name="${src.dir.name}"
 							module="@{module}"
 						/>
-
-						<append-module-list />
 					</then>
 				</if>
 
