@@ -42,6 +42,32 @@
 		</classpath>
 	</taskdef>
 
+	<macrodef name="append-dependency-list">
+		<attribute name="dependency" />
+		<attribute name="group" default="${groupId}" />
+		<attribute name="version" default="${version}" />
+
+		<sequential>
+			<if>
+				<not>
+					<equals arg1="@{dependency}" arg2="" />
+				</not>
+				<then>
+					<if>
+						<equals arg1="${module.dependency.list}" arg2="" />
+						<then>
+							<var name="concat" value="@{group}:@{version}:@{dependency}" />
+						</then>
+						<else>
+							<var name="concat" value="${module.dependency.list} @{group}:@{version}:@{dependency}" />
+						</else>
+					</if>
+					<var name="module.dependency.list" value="${concat}" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="append-ivy-dependency">
 		<sequential>
 			<if>
@@ -80,29 +106,41 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="append-dependency-list">
-		<attribute name="dependency" />
-		<attribute name="group" default="${groupId}" />
-		<attribute name="version" default="${version}" />
-
+	<macrodef name="append-parsed-ivy-dependency">
 		<sequential>
 			<if>
-				<not>
-					<equals arg1="@{dependency}" arg2="" />
-				</not>
+				<available file="ivytopom/${src.dir.name}/pom.xml" />
 				<then>
+					<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
+						<filterchain>
+							<headfilter lines="-1" skip="15" />
+						</filterchain>
+					</loadfile>
 					<if>
-						<equals arg1="${module.dependency.list}" arg2="" />
+						<isset property="dependency-set" />
 						<then>
-							<var name="concat" value="@{group}:@{version}:@{dependency}" />
+							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
+								<replacetoken><![CDATA[  </dependencies>
+</project>]]></replacetoken>
+							</replace>
+
+							<var name="dependency-set" unset="true" />
+
+							<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
+								<filterchain>
+									<headfilter lines="-1" skip="14" />
+								</filterchain>
+							</loadfile>
+							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
+								<replacetoken><![CDATA[  <dependencies/>
+</project>]]></replacetoken>
+							</replace>
 						</then>
-						<else>
-							<var name="concat" value="${module.dependency.list} @{group}:@{version}:@{dependency}" />
-						</else>
 					</if>
-					<var name="module.dependency.list" value="${concat}" />
 				</then>
 			</if>
+
+			<var name="dependency-set" unset="true" />
 		</sequential>
 	</macrodef>
 
@@ -420,6 +458,6 @@
 			<arg line="${module.classpath.convert}" />
 		</java>
 
-		<clean-up />
+<!--		<clean-up />-->
 	</target>
 </project>
