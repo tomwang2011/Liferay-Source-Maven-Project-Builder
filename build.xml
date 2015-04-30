@@ -68,26 +68,6 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="append-parsed-ivy-dependency">
-		<sequential>
-			<if>
-				<available file="ivytopom/${src.dir.name}/pom.xml" />
-				<then>
-<!--					<echo>******${src.dir.name}***</echo>-->
-					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" prefix="ivyToPom" collapseAttributes="true" semanticAttributes="true" />
-<!--					<echoproperties />-->
-					<var name="ivy.module.dependency" value="${ivyToPom.project.dependencies.dependency.artifactId}:${ivyToPom.project.dependencies.dependency.groupId}:${ivyToPom.project.dependencies.dependency.version}:${ivyToPom.project.dependencies.dependency.scope}" />
-<!--					<echo>*${ivy.module.dependency}</echo>-->
-
-					<var name="ivyToPom.project.dependencies.dependency.artifactId" unset="true" />
-					<var name="ivyToPom.project.dependencies.dependency.groupId" unset="true" />
-					<var name="ivyToPom.project.dependencies.dependency.version" unset="true" />
-					<var name="ivyToPom.project.dependencies.dependency.scope" unset="true" />
-				</then>
-			</if>
-		</sequential>
-	</macrodef>
-
 	<macrodef name="append-module-list">
 		<sequential>
 			<if>
@@ -159,26 +139,6 @@
 			<var name="module.dependency.list" unset="true" />
 			<var name="module.dependency.list" value="" />
 			<var name="ivy.module.dependency" unset="true" />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="ivy-convert">
-		<sequential>
-			<if>
-				<available file="${src.dir}/ivy.xml" />
-				<then>
-					<!--					<echo>******${src.dir.name}***</echo>-->
-					<xmlproperty file="${src.dir}/ivy.xml" prefix="ivyToPom" collapseAttributes="true" semanticAttributes="true" />
-					<echoproperties />
-					<var name="ivy.module.dependency" value="${ivyToPom.project.dependencies.dependency.artifactId}:${ivyToPom.project.dependencies.dependency.groupId}:${ivyToPom.project.dependencies.dependency.version}:${ivyToPom.project.dependencies.dependency.scope}" />
-<!--					<echo>*${ivy.module.dependency}</echo>-->
-
-					<var name="ivyToPom.project.dependencies.dependency.artifactId" unset="true" />
-					<var name="ivyToPom.project.dependencies.dependency.groupId" unset="true" />
-					<var name="ivyToPom.project.dependencies.dependency.version" unset="true" />
-					<var name="ivyToPom.project.dependencies.dependency.scope" unset="true" />
-				</then>
-			</if>
 		</sequential>
 	</macrodef>
 
