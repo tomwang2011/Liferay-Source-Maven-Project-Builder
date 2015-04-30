@@ -134,11 +134,14 @@
 			<solve-module-specific-dependencies
 				src.dir.name="@{src.dir.name}"
 			/>
-
-			<ivy-convert />
-
-			<append-parsed-ivy-dependency />
-			<echo>***@{src.dir.name}**</echo>
+			
+			<if>
+				<available file="${src.dir}/ivy.xml" />
+				<then>
+					<var name="ivy.module.dependency" value="${src.dir}/ivy.xml" />
+				</then>
+			</if>
+			
 			<java classname="CreateModulePOM" classpath="${basedir}/classes">
 				<arg value="${groupId}" />
 				<arg value="@{src.dir.name}" />
@@ -164,14 +167,16 @@
 			<if>
 				<available file="${src.dir}/ivy.xml" />
 				<then>
-					<ivy:makepom ivyfile="${src.dir}/ivy.xml" pomfile="ivytopom/${src.dir.name}/pom.xml" conf="default, internal, provided, runtime, test">
-						<mapping conf="default" scope="compile" />
-						<mapping conf="internal" scope="compile" />
-						<mapping conf="master" scope="master" />
-						<mapping conf="provided" scope="provided" />
-						<mapping conf="runtime" scope="runtime" />
-						<mapping conf="test" scope="test" />
-					</ivy:makepom>
+					<!--					<echo>******${src.dir.name}***</echo>-->
+					<xmlproperty file="${src.dir}/ivy.xml" prefix="ivyToPom" collapseAttributes="true" semanticAttributes="true" />
+					<echoproperties />
+					<var name="ivy.module.dependency" value="${ivyToPom.project.dependencies.dependency.artifactId}:${ivyToPom.project.dependencies.dependency.groupId}:${ivyToPom.project.dependencies.dependency.version}:${ivyToPom.project.dependencies.dependency.scope}" />
+<!--					<echo>*${ivy.module.dependency}</echo>-->
+
+					<var name="ivyToPom.project.dependencies.dependency.artifactId" unset="true" />
+					<var name="ivyToPom.project.dependencies.dependency.groupId" unset="true" />
+					<var name="ivyToPom.project.dependencies.dependency.version" unset="true" />
+					<var name="ivyToPom.project.dependencies.dependency.scope" unset="true" />
 				</then>
 			</if>
 		</sequential>

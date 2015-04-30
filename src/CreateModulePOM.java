@@ -1,7 +1,10 @@
 
 import java.io.File;
+import java.io.IOException;
 
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,6 +16,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class CreateModulePOM {
 
@@ -298,11 +304,9 @@ public class CreateModulePOM {
 	public static void main(String[] args) throws Exception {
 		parseArgument(args);
 
-		DocumentBuilderFactory documentBuilderFactory
-			= DocumentBuilderFactory.newInstance();
+		documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
-		DocumentBuilder documentBuilder
-			= documentBuilderFactory.newDocumentBuilder();
+		documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
 		document = documentBuilder.newDocument();
 
@@ -363,21 +367,41 @@ public class CreateModulePOM {
 
 	public static void parseIvyDependencies(Element dependenciesElement) {
 		if (!_ivyDependency.startsWith("$")) {
-			String[] ivyArray = _ivyDependency.split(":");
-			String[] ivyArtifactIdArray = ivyArray[0].split(",");
-			String[] ivyGroupIdArray = ivyArray[1].split(",");
-			String[] ivyVersionArray = ivyArray[2].split(",");
-			String[] ivyScopeArray = ivyArray[3].split(",");
-
-			for (int i = 0; i < ivyArtifactIdArray.length; i++) {
-				String ivyDependency = ivyGroupIdArray[i] + ":" + ivyVersionArray[i] + ":" + ivyScopeArray[i] + ":" + ivyArtifactIdArray[i];
-				System.out.println(ivyDependency);
-				createDependencyElement(dependenciesElement, ivyDependency);
+			try {
+//				System.out.println("ivy: " + _ivyDependency);
+				File ivyFile = new File(_ivyDependency);
+				Document ivyDocument = documentBuilder.parse(ivyFile);
+				ivyDocument.getDocumentElement().normalize();
+//				System.out.println("Root Element: " + ivyDocument.getDocumentElement().getNodeName());
+				NodeList ivyDependencyList = ivyDocument.getElementsByTagName("dependency");
+				for (int i = 0; i < ivyDependencyList.getLength(); i++) {
+					Node ivyDependencyNode = ivyDependencyList.item(i);
+					Element ivyDependencyElement = (Element) ivyDependencyNode;
+					String ivyDependency;
+					if(ivyDependencyElement.getAttribute("conf").isEmpty()) {
+						ivyDependency = ivyDependencyElement.getAttribute("org")+":"+ivyDependencyElement.getAttribute("rev")+":"+ivyDependencyElement.getAttribute("name");
+					}
+					else {
+						String ivyConf = ivyDependencyElement.getAttribute("conf");
+						System.out.println("****conf: "+ivyConf);
+						ivyConf = "compile";
+						ivyDependency = ivyDependencyElement.getAttribute("org")+":"+ivyDependencyElement.getAttribute("rev")+":"+ivyConf+":"+ivyDependencyElement.getAttribute("name");
+					}
+//					System.out.println(ivyDependency);
+					createDependencyElement(dependenciesElement, ivyDependency);
+//					System.out.println("************");
+				}
+				System.out.println("-----------------------------------------------------------");
+			}
+			catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
 	private static Document document;
+	private static DocumentBuilder documentBuilder;
+	private static DocumentBuilderFactory documentBuilderFactory;
 	private static String _artifactId;
 	private static String _fullPath;
 	private static String _groupId;
