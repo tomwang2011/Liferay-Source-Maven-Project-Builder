@@ -68,58 +68,23 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="append-ivy-dependency">
-		<sequential>
-			<if>
-				<available file="ivytopom/${src.dir.name}/pom.xml" />
-				<then>
-					<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
-						<filterchain>
-							<headfilter lines="-1" skip="15" />
-						</filterchain>
-					</loadfile>
-					<if>
-						<isset property="dependency-set" />
-						<then>
-							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
-								<replacetoken><![CDATA[  </dependencies>
-</project>]]></replacetoken>
-							</replace>
-
-							<var name="dependency-set" unset="true" />
-
-							<loadfile srcfile="ivytopom/${src.dir.name}/pom.xml" property="dependency-set">
-								<filterchain>
-									<headfilter lines="-1" skip="14" />
-								</filterchain>
-							</loadfile>
-							<replace file="portal/${src.dir.name}/pom.xml" value="${dependency-set}">
-								<replacetoken><![CDATA[  <dependencies/>
-</project>]]></replacetoken>
-							</replace>
-						</then>
-					</if>
-				</then>
-			</if>
-
-			<var name="dependency-set" unset="true" />
-		</sequential>
-	</macrodef>
-
 	<macrodef name="append-parsed-ivy-dependency">
 		<sequential>
 			<if>
 				<available file="ivytopom/${src.dir.name}/pom.xml" />
 				<then>
-					<echo>******${src.dir.name}***</echo>
+<!--					<echo>******${src.dir.name}***</echo>-->
 					<xmlproperty file="ivytopom/${src.dir.name}/pom.xml" prefix="ivyToPom" collapseAttributes="true" semanticAttributes="true" />
 <!--					<echoproperties />-->
-					<var name="ivy-module-dependency" value="${ivyToPom.project.dependencies.dependency.artifactId}:${ivyToPom.project.dependencies.dependency.groupId}:${ivyToPom.project.dependencies.dependency.version}:${ivyToPom.project.dependencies.dependency.scope}" />
-					<echo>*${ivy-module-dependency}</echo>
+					<var name="ivy.module.dependency" value="${ivyToPom.project.dependencies.dependency.artifactId}:${ivyToPom.project.dependencies.dependency.groupId}:${ivyToPom.project.dependencies.dependency.version}:${ivyToPom.project.dependencies.dependency.scope}" />
+<!--					<echo>*${ivy.module.dependency}</echo>-->
+
+					<var name="ivyToPom.project.dependencies.dependency.artifactId" unset="true" />
+					<var name="ivyToPom.project.dependencies.dependency.groupId" unset="true" />
+					<var name="ivyToPom.project.dependencies.dependency.version" unset="true" />
+					<var name="ivyToPom.project.dependencies.dependency.scope" unset="true" />
 				</then>
 			</if>
-
-			<var name="dependency-set" unset="true" />
 		</sequential>
 	</macrodef>
 
@@ -170,7 +135,11 @@
 				src.dir.name="@{src.dir.name}"
 			/>
 
-			<java classname="CreatePOM" classpath="${basedir}/classes">
+			<ivy-convert />
+
+			<append-parsed-ivy-dependency />
+			<echo>***@{src.dir.name}**</echo>
+			<java classname="CreateModulePOM" classpath="${basedir}/classes">
 				<arg value="${groupId}" />
 				<arg value="@{src.dir.name}" />
 				<arg value="${version}" />
@@ -178,6 +147,7 @@
 				<arg value="@{src.dir.name}" />
 				<arg value="@{module}" />
 				<arg value="${portal.dir}" />
+				<arg value="${ivy.module.dependency}" />
 
 				<arg line="${module.dependency.list}" />
 			</java>
@@ -185,17 +155,7 @@
 			<var name="module.lib.classpath.convert" unset="true" />
 			<var name="module.dependency.list" unset="true" />
 			<var name="module.dependency.list" value="" />
-
-			<ivy-convert />
-
-			<if>
-				<equals arg1="@{src.dir.name}" arg2="bookmarks-service" />
-				<then>
-					<append-parsed-ivy-dependency />
-				</then>
-			</if>
-
-			<append-ivy-dependency />
+			<var name="ivy.module.dependency" unset="true" />
 		</sequential>
 	</macrodef>
 
