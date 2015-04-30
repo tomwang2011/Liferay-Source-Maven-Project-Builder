@@ -370,22 +370,30 @@ public class CreateModulePOM {
 			try {
 //				System.out.println("ivy: " + _ivyDependency);
 				File ivyFile = new File(_ivyDependency);
+
 				Document ivyDocument = documentBuilder.parse(ivyFile);
+
 				ivyDocument.getDocumentElement().normalize();
 //				System.out.println("Root Element: " + ivyDocument.getDocumentElement().getNodeName());
 				NodeList ivyDependencyList = ivyDocument.getElementsByTagName("dependency");
+
 				for (int i = 0; i < ivyDependencyList.getLength(); i++) {
 					Node ivyDependencyNode = ivyDependencyList.item(i);
+
 					Element ivyDependencyElement = (Element) ivyDependencyNode;
 					String ivyDependency;
-					if(ivyDependencyElement.getAttribute("conf").isEmpty()) {
-						ivyDependency = ivyDependencyElement.getAttribute("org")+":"+ivyDependencyElement.getAttribute("rev")+":"+ivyDependencyElement.getAttribute("name");
+
+					if (ivyDependencyElement.getAttribute("conf").isEmpty()) {
+						ivyDependency = ivyDependencyElement.getAttribute("org") + ":" + ivyDependencyElement.getAttribute("rev") + ":" + ivyDependencyElement.getAttribute("name");
 					}
 					else {
 						String ivyConf = ivyDependencyElement.getAttribute("conf");
-						System.out.println("****conf: "+ivyConf);
+
+						System.out.println("****conf: " + ivyConf);
+
 						ivyConf = "compile";
-						ivyDependency = ivyDependencyElement.getAttribute("org")+":"+ivyDependencyElement.getAttribute("rev")+":"+ivyConf+":"+ivyDependencyElement.getAttribute("name");
+
+						ivyDependency = ivyDependencyElement.getAttribute("org") + ":" + ivyDependencyElement.getAttribute("rev") + ":" + ivyConf + ":" + ivyDependencyElement.getAttribute("name");
 					}
 //					System.out.println(ivyDependency);
 					createDependencyElement(dependenciesElement, ivyDependency);
