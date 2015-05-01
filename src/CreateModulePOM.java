@@ -1,10 +1,7 @@
 
 import java.io.File;
-import java.io.IOException;
 
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,7 +15,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class CreateModulePOM {
 
@@ -94,6 +90,8 @@ public class CreateModulePOM {
 
 		projectElement.appendChild(dependenciesElement);
 
+		parseModuleBuildFile(dependenciesElement);
+
 		parseIvyDependencies(dependenciesElement);
 
 		for (int i = 0; i < _tokens.length; i++) {
@@ -147,9 +145,28 @@ public class CreateModulePOM {
 		if (dependencyTokens.length > 3) {
 			Element dependencyScopeElement = document.createElement("scope");
 
-			dependencyScopeElement.appendChild(document.createTextNode(dependencyTokens[2]));
+			if (dependencyTokens[2].equals("master")) {
+				dependencyScopeElement.appendChild(
+					document.createTextNode("compile"));
+				dependencyElement.appendChild(dependencyScopeElement);
+				Element exclusionsElement = document.createElement("exclusions");
+				dependencyElement.appendChild(exclusionsElement);
+				Element exclusionElement = document.createElement("exclusion");
+				exclusionsElement.appendChild(exclusionElement);
+				Element exclusionGroupIdElement = document.createElement("groupId");
+				exclusionElement.appendChild(exclusionGroupIdElement);
+				exclusionGroupIdElement.appendChild(document.createTextNode("*"));
+				Element exclusionArtifactIdElement = document.createElement("artifactId");
+				exclusionElement.appendChild(exclusionArtifactIdElement);
+				exclusionArtifactIdElement.appendChild(document.createTextNode("*"));
+			}
+			else {
+				dependencyScopeElement.appendChild(
+					document.createTextNode(dependencyTokens[2]));
 
-			dependencyElement.appendChild(dependencyScopeElement);
+				dependencyElement.appendChild(dependencyScopeElement);
+			}
+
 		}
 
 		if (artifactIdToken[artifactIdToken.length - 1].endsWith(".jar")) {
@@ -353,7 +370,9 @@ public class CreateModulePOM {
 
 			_ivyDependency = args[7];
 
-			_tokens = Arrays.copyOfRange(args, 8, args.length);
+			_moduleBuildFile = args[8];
+
+			_tokens = Arrays.copyOfRange(args, 9, args.length);
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(
@@ -368,14 +387,14 @@ public class CreateModulePOM {
 	public static void parseIvyDependencies(Element dependenciesElement) {
 		if (!_ivyDependency.startsWith("$")) {
 			try {
-//				System.out.println("ivy: " + _ivyDependency);
 				File ivyFile = new File(_ivyDependency);
 
 				Document ivyDocument = documentBuilder.parse(ivyFile);
 
 				ivyDocument.getDocumentElement().normalize();
-//				System.out.println("Root Element: " + ivyDocument.getDocumentElement().getNodeName());
-				NodeList ivyDependencyList = ivyDocument.getElementsByTagName("dependency");
+
+				NodeList ivyDependencyList
+					= ivyDocument.getElementsByTagName("dependency");
 
 				for (int i = 0; i < ivyDependencyList.getLength(); i++) {
 					Node ivyDependencyNode = ivyDependencyList.item(i);
@@ -384,27 +403,64 @@ public class CreateModulePOM {
 					String ivyDependency;
 
 					if (ivyDependencyElement.getAttribute("conf").isEmpty()) {
-						ivyDependency = ivyDependencyElement.getAttribute("org") + ":" + ivyDependencyElement.getAttribute("rev") + ":" + ivyDependencyElement.getAttribute("name");
+						ivyDependency = ivyDependencyElement.getAttribute("org")
+							+ ":" + ivyDependencyElement.getAttribute("rev")
+							+ ":" + ivyDependencyElement.getAttribute("name");
 					}
 					else {
-						String ivyConf = ivyDependencyElement.getAttribute("conf");
+						String ivyConf
+							= ivyDependencyElement.getAttribute("conf");
 
-						System.out.println("****conf: " + ivyConf);
+						if (ivyConf.endsWith("master") && !ivyConf.startsWith("internal")) {
+							ivyConf = "master";
+						}
+						else {
+							ivyConf = "compile";
+						}
 
-						ivyConf = "compile";
-
-						ivyDependency = ivyDependencyElement.getAttribute("org") + ":" + ivyDependencyElement.getAttribute("rev") + ":" + ivyConf + ":" + ivyDependencyElement.getAttribute("name");
+						ivyDependency = ivyDependencyElement.getAttribute("org")
+							+ ":" + ivyDependencyElement.getAttribute("rev")
+							+ ":" + ivyConf + ":"
+							+ ivyDependencyElement.getAttribute("name");
 					}
-//					System.out.println(ivyDependency);
 					createDependencyElement(dependenciesElement, ivyDependency);
-//					System.out.println("************");
 				}
-				System.out.println("-----------------------------------------------------------");
 			}
 			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static void parseModuleBuildFile(Element dependenciesElement) {
+		try {
+			File moduleBuildFile = new File(_moduleBuildFile);
+			Document moduleBuildFileDocument
+				= documentBuilder.parse(moduleBuildFile);
+			moduleBuildFileDocument.getDocumentElement().normalize();
+			NodeList modulePropertyList
+				= moduleBuildFileDocument.getElementsByTagName("property");
+			for (int i = 0; i < modulePropertyList.getLength(); i++) {
+				Node modulePropertyNode = modulePropertyList.item(i);
+				Element modulePropertyElement = (Element) modulePropertyNode;
+
+				if (modulePropertyElement.getAttribute("name").equals("import.shared")) {
+					String[] moduleDependencyList
+						= modulePropertyElement.getAttribute("value").split(",");
+					for (int j = 0; j < moduleDependencyList.length; j++) {
+						String[] moduleDependencySplit
+							= moduleDependencyList[j].split("/");
+						createDependencyElement(dependenciesElement, _groupId
+							+ ":" + _version + ":"
+							+ moduleDependencySplit[moduleDependencySplit.length - 1]);
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private static Document document;
@@ -414,6 +470,7 @@ public class CreateModulePOM {
 	private static String _fullPath;
 	private static String _groupId;
 	private static String _ivyDependency;
+	private static String _moduleBuildFile;
 	private static String _name;
 	private static String _packaging;
 	private static String _portalPath;

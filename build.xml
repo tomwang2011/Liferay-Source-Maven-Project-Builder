@@ -106,22 +106,22 @@
 		<attribute name="src.dir.name" />
 
 		<sequential>
-			<parse-build-files
-				module="@{module}"
-				src.dir.name="@{src.dir.name}"
-			/>
-
 			<solve-module-specific-dependencies
 				src.dir.name="@{src.dir.name}"
 			/>
-			
+
 			<if>
 				<available file="${src.dir}/ivy.xml" />
 				<then>
 					<var name="ivy.module.dependency" value="${src.dir}/ivy.xml" />
 				</then>
 			</if>
-			
+
+			<parse-build-files
+				module="@{module}"
+				src.dir.name="@{src.dir.name}"
+			/>
+
 			<java classname="CreateModulePOM" classpath="${basedir}/classes">
 				<arg value="${groupId}" />
 				<arg value="@{src.dir.name}" />
@@ -131,11 +131,13 @@
 				<arg value="@{module}" />
 				<arg value="${portal.dir}" />
 				<arg value="${ivy.module.dependency}" />
+				<arg value="${module.build.file}" />
 
 				<arg line="${module.dependency.list}" />
 			</java>
 
 			<var name="module.lib.classpath.convert" unset="true" />
+			<var name="module.build.file" unset="true" />
 			<var name="module.dependency.list" unset="true" />
 			<var name="module.dependency.list" value="" />
 			<var name="ivy.module.dependency" unset="true" />
@@ -149,50 +151,16 @@
 			<if>
 				<available file="@{module}/../build.xml" />
 				<then>
-					<xmlproperty file="@{module}/../build.xml" collapseAttributes="true" semanticAttributes="false" />
+					<var name="module.build.file" value="@{module}/../build.xml" />
 				</then>
 				<elseif>
 					<available file="@{module}/../../../build.xml" />
 					<then>
-						<xmlproperty file="@{module}/../../../build.xml" collapseAttributes="true" semanticAttributes="false" />
+						<var name="module.build.file" value="@{module}/../../../build.xml" />
 					</then>
 				</elseif>
 			</if>
 
-			<for list="${project.property.name}" param="name">
-				<sequential>
-					<if>
-						<equals arg1="@{name}" arg2="import.shared" />
-						<then>
-							<for list="${project.property.value}" param="value">
-								<sequential>
-
-									<parser module="@{value}" splitter="/" property="value.directory" extension="value.dependency" />
-									<if>
-										<available file="${project.dir}/@{value}" type="dir" />
-										<then>
-											<append-dependency-list
-												dependency="@{value}"
-											/>
-										</then>
-										<elseif>
-											<available file="${project.dir}/${value.dependency}" type="dir" />
-											<then>
-												<append-dependency-list
-													dependency="${value.dependency}"
-												/>
-											</then>
-										</elseif>
-									</if>
-								</sequential>
-							</for>
-						</then>
-					</if>
-				</sequential>
-			</for>
-
-			<var name="project.property.name" unset="true" />
-			<var name="project.property.value" unset="true" />
 		</sequential>
 	</macrodef>
 
@@ -228,19 +196,19 @@
 
 		<sequential>
 			<parser module="@{src.dir.name}" splitter="-" property="module.name" extension="module.extension" />
-				<if>
-					<and>
-						<available file="${project.dir}/${module.name}-web" type="dir" />
-						<equals arg1="${module.extension}" arg2="test" />
-					</and>
-					<then>
-						<append-dependency-list
-							dependency="${module.name}-web"
-						/>
-						<append-dependency-list
-							dependency="portal-test-internal"
-						/>
-					</then>
+			<if>
+				<and>
+					<available file="${project.dir}/${module.name}-web" type="dir" />
+					<equals arg1="${module.extension}" arg2="test" />
+				</and>
+				<then>
+					<append-dependency-list
+						dependency="${module.name}-web"
+					/>
+					<append-dependency-list
+						dependency="portal-test-internal"
+					/>
+				</then>
 			</if>
 
 			<property file="dependencies.properties" prefix="appender." />
@@ -368,6 +336,6 @@
 			<arg line="${module.classpath.convert}" />
 		</java>
 
-<!--		<clean-up />-->
+		<!--		<clean-up />-->
 	</target>
 </project>
