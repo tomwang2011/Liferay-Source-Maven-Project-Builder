@@ -148,17 +148,33 @@ public class CreateModulePOM {
 			if (dependencyTokens[2].equals("master")) {
 				dependencyScopeElement.appendChild(
 					document.createTextNode("compile"));
+
 				dependencyElement.appendChild(dependencyScopeElement);
-				Element exclusionsElement = document.createElement("exclusions");
+
+				Element exclusionsElement =
+					document.createElement("exclusions");
+
 				dependencyElement.appendChild(exclusionsElement);
+
 				Element exclusionElement = document.createElement("exclusion");
+
 				exclusionsElement.appendChild(exclusionElement);
-				Element exclusionGroupIdElement = document.createElement("groupId");
+
+				Element exclusionGroupIdElement =
+					document.createElement("groupId");
+
 				exclusionElement.appendChild(exclusionGroupIdElement);
-				exclusionGroupIdElement.appendChild(document.createTextNode("*"));
-				Element exclusionArtifactIdElement = document.createElement("artifactId");
+
+				exclusionGroupIdElement.appendChild(
+					document.createTextNode("*"));
+
+				Element exclusionArtifactIdElement =
+					document.createElement("artifactId");
+
 				exclusionElement.appendChild(exclusionArtifactIdElement);
-				exclusionArtifactIdElement.appendChild(document.createTextNode("*"));
+
+				exclusionArtifactIdElement.appendChild(
+					document.createTextNode("*"));
 			}
 			else {
 				dependencyScopeElement.appendChild(
@@ -411,7 +427,8 @@ public class CreateModulePOM {
 						String ivyConf
 							= ivyDependencyElement.getAttribute("conf");
 
-						if (ivyConf.endsWith("master") && !ivyConf.startsWith("internal")) {
+						if (ivyConf.endsWith("master")
+							&& !ivyConf.startsWith("internal")) {
 							ivyConf = "master";
 						}
 						else {
@@ -435,24 +452,69 @@ public class CreateModulePOM {
 	public static void parseModuleBuildFile(Element dependenciesElement) {
 		try {
 			File moduleBuildFile = new File(_moduleBuildFile);
+
 			Document moduleBuildFileDocument
 				= documentBuilder.parse(moduleBuildFile);
+
 			moduleBuildFileDocument.getDocumentElement().normalize();
+
 			NodeList modulePropertyList
 				= moduleBuildFileDocument.getElementsByTagName("property");
+
 			for (int i = 0; i < modulePropertyList.getLength(); i++) {
-				Node modulePropertyNode = modulePropertyList.item(i);
-				Element modulePropertyElement = (Element) modulePropertyNode;
+				Element modulePropertyElement = (Element) modulePropertyList.item(i);
 
 				if (modulePropertyElement.getAttribute("name").equals("import.shared")) {
 					String[] moduleDependencyList
 						= modulePropertyElement.getAttribute("value").split(",");
+
 					for (int j = 0; j < moduleDependencyList.length; j++) {
 						String[] moduleDependencySplit
 							= moduleDependencyList[j].split("/");
+
 						createDependencyElement(dependenciesElement, _groupId
 							+ ":" + _version + ":"
 							+ moduleDependencySplit[moduleDependencySplit.length - 1]);
+					}
+				}
+			}
+			NodeList webLibPathNodeList =
+				moduleBuildFileDocument.getElementsByTagName("path");
+
+			for (int i = 0; i < webLibPathNodeList.getLength(); i++) {
+				Element webLibPathElement =
+					(Element) webLibPathNodeList.item(i);
+
+				if (webLibPathElement.getAttribute("id").equals("web-lib.classpath")) {
+					NodeList filesetNodeList =
+						webLibPathElement.getElementsByTagName("fileset");
+
+					Element filesetElement = (Element) filesetNodeList.item(0);
+
+					String[] libDependencyList =
+						filesetElement.getAttribute("includes").split(",");
+
+					String libDependencyPath =
+						filesetElement.getAttribute("dir");
+
+					String parsedPath =
+						libDependencyPath.replace("${project.dir}", _portalPath);
+
+					for (int j = 0; j < libDependencyList.length; j++) {
+						libDependencyPath =
+							parsedPath + "/" + libDependencyList[j];
+
+						File dependencyFile = new File(libDependencyPath);
+
+						if (!dependencyFile.exists()) {
+							System.out.println(
+								"Path error at: " + parsedPath
+									+ " for module: " + _artifactId);
+						}
+						else {
+							createDependencyElement(
+								dependenciesElement, libDependencyPath);
+						}
 					}
 				}
 			}
