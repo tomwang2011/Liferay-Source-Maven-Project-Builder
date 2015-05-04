@@ -103,8 +103,8 @@ public class CreateModulePOM {
 		Element dependenciesElement, String dependencyToken) {
 
 		String[] dependencyTokens = dependencyToken.split(":");
-		String[] artifactIdToken
-			= dependencyTokens[dependencyTokens.length - 1].split("/");
+		String[] artifactIdToken =
+			dependencyTokens[dependencyTokens.length - 1].split("/");
 
 		Element dependencyElement = document.createElement("dependency");
 		Element dependencyGroupIdElement = document.createElement("groupId");
@@ -259,79 +259,10 @@ public class CreateModulePOM {
 			"http://www.w3.org/2001/XMLSchema-instance");
 		projectElement.setAttribute(
 			"xsi:schemaLocation",
-			"http://maven.apache.org/POM/4.0.0 "
-			+ "http://maven.apache.org/maven-v4_0_0.xsd");
+			"http://maven.apache.org/POM/4.0.0 " +
+			 "http://maven.apache.org/maven-v4_0_0.xsd");
 
 		createArtifactElements(projectElement);
-	}
-
-	public static void createPropertiesElement(
-		Element portalSourceDirElement, Element projectElement) {
-
-		Element propertiesElement = document.createElement("properties");
-
-		projectElement.appendChild(propertiesElement);
-
-		propertiesElement.appendChild(portalSourceDirElement);
-
-		Element compilerSourceElement = document.createElement(
-			"maven.compiler.source");
-
-		compilerSourceElement.appendChild(document.createTextNode("1.7"));
-
-		propertiesElement.appendChild(compilerSourceElement);
-
-		Element compilerTargetElement = document.createElement(
-			"maven.compiler.target");
-
-		compilerTargetElement.appendChild(document.createTextNode("1.7"));
-
-		propertiesElement.appendChild(compilerTargetElement);
-	}
-
-	public static void createRepositoriesElement(
-		Element projectElement)
-		throws Exception {
-
-		Element repositoriesElement = document.createElement("repositories");
-
-		projectElement.appendChild(repositoriesElement);
-
-		createRepositoryElement(
-			repositoriesElement, "com.liferay.liferay-ce",
-			"https://repository.liferay.com/nexus/content/groups/liferay-ce/");
-
-		createRepositoryElement(
-			repositoriesElement, "public",
-			"https://repository.liferay.com/nexus/content/groups/public/");
-
-		createRepositoryElement(
-			repositoriesElement, "spring-releases",
-			"http://repo.spring.io/libs-release-remote/");
-	}
-
-	public static void createRepositoryElement(
-		Element repositoriesElement, String repoId,
-		String repoUrl)
-		throws Exception {
-
-		Element repositoryElement = document.createElement("repository");
-
-		repositoriesElement.appendChild(repositoryElement);
-
-		Element repositoryIdElement = document.createElement("id");
-
-		repositoryElement.appendChild(repositoryIdElement);
-
-		repositoryIdElement.appendChild(
-			document.createTextNode(repoId));
-
-		Element repositoryURLElement = document.createElement("url");
-
-		repositoryElement.appendChild(repositoryURLElement);
-
-		repositoryURLElement.appendChild(document.createTextNode(
-			repoUrl));
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -345,8 +276,8 @@ public class CreateModulePOM {
 
 		createProjectElement();
 
-		TransformerFactory transformerFactory
-			= TransformerFactory.newInstance();
+		TransformerFactory transformerFactory =
+			TransformerFactory.newInstance();
 
 		Transformer transformer = transformerFactory.newTransformer();
 
@@ -392,9 +323,9 @@ public class CreateModulePOM {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(
-				"Insufficient number of inputs, please use the following order "
-				+ "of inputs: GroupId, ArtifactId, Version, Packaging, Name, "
-				+ "FullPath-to-module, Portal-path, Modules, Dependencies");
+				"Insufficient number of inputs, please use the following order " +
+				 "of inputs: GroupId, ArtifactId, Version, Packaging, Name, " +
+				 "FullPath-to-module, Portal-path, Modules, Dependencies");
 
 			System.exit(1);
 		}
@@ -409,8 +340,8 @@ public class CreateModulePOM {
 
 				ivyDocument.getDocumentElement().normalize();
 
-				NodeList ivyDependencyList
-					= ivyDocument.getElementsByTagName("dependency");
+				NodeList ivyDependencyList =
+					ivyDocument.getElementsByTagName("dependency");
 
 				for (int i = 0; i < ivyDependencyList.getLength(); i++) {
 					Node ivyDependencyNode = ivyDependencyList.item(i);
@@ -419,26 +350,28 @@ public class CreateModulePOM {
 					String ivyDependency;
 
 					if (ivyDependencyElement.getAttribute("conf").isEmpty()) {
-						ivyDependency = ivyDependencyElement.getAttribute("org")
-							+ ":" + ivyDependencyElement.getAttribute("rev")
-							+ ":" + ivyDependencyElement.getAttribute("name");
+						ivyDependency =
+							ivyDependencyElement.getAttribute("org") +
+							 ":" + ivyDependencyElement.getAttribute("rev") +
+							 ":" + ivyDependencyElement.getAttribute("name");
 					}
 					else {
-						String ivyConf
-							= ivyDependencyElement.getAttribute("conf");
+						String ivyConf =
+							ivyDependencyElement.getAttribute("conf");
 
-						if (ivyConf.endsWith("master")
-							&& !ivyConf.startsWith("internal")) {
+						if (ivyConf.endsWith("master") &&
+							 !ivyConf.startsWith("internal")) {
 							ivyConf = "master";
 						}
 						else {
 							ivyConf = "compile";
 						}
 
-						ivyDependency = ivyDependencyElement.getAttribute("org")
-							+ ":" + ivyDependencyElement.getAttribute("rev")
-							+ ":" + ivyConf + ":"
-							+ ivyDependencyElement.getAttribute("name");
+						ivyDependency =
+							ivyDependencyElement.getAttribute("org") +
+							 ":" + ivyDependencyElement.getAttribute("rev") +
+							 ":" + ivyConf + ":" +
+							 ivyDependencyElement.getAttribute("name");
 					}
 					createDependencyElement(dependenciesElement, ivyDependency);
 				}
@@ -453,28 +386,31 @@ public class CreateModulePOM {
 		try {
 			File moduleBuildFile = new File(_moduleBuildFile);
 
-			Document moduleBuildFileDocument
-				= documentBuilder.parse(moduleBuildFile);
+			Document moduleBuildFileDocument =
+				documentBuilder.parse(moduleBuildFile);
 
 			moduleBuildFileDocument.getDocumentElement().normalize();
 
-			NodeList modulePropertyList
-				= moduleBuildFileDocument.getElementsByTagName("property");
+			NodeList modulePropertyList =
+				moduleBuildFileDocument.getElementsByTagName("property");
 
 			for (int i = 0; i < modulePropertyList.getLength(); i++) {
-				Element modulePropertyElement = (Element) modulePropertyList.item(i);
+				Element modulePropertyElement =
+					(Element) modulePropertyList.item(i);
 
 				if (modulePropertyElement.getAttribute("name").equals("import.shared")) {
-					String[] moduleDependencyList
-						= modulePropertyElement.getAttribute("value").split(",");
+					String[] moduleDependencyList =
+						modulePropertyElement.getAttribute("value").split(",");
 
 					for (int j = 0; j < moduleDependencyList.length; j++) {
-						String[] moduleDependencySplit
-							= moduleDependencyList[j].split("/");
+						String[] moduleDependencySplit =
+							moduleDependencyList[j].split("/");
 
-						createDependencyElement(dependenciesElement, _groupId
-							+ ":" + _version + ":"
-							+ moduleDependencySplit[moduleDependencySplit.length - 1]);
+						createDependencyElement(dependenciesElement, _groupId +
+							 ":" + _version + ":" +
+
+							moduleDependencySplit[moduleDependencySplit.length -
+							1]);
 					}
 				}
 			}
@@ -498,7 +434,8 @@ public class CreateModulePOM {
 						filesetElement.getAttribute("dir");
 
 					String parsedPath =
-						libDependencyPath.replace("${project.dir}", _portalPath);
+						libDependencyPath.replace(
+							"${project.dir}", _portalPath);
 
 					for (int j = 0; j < libDependencyList.length; j++) {
 						libDependencyPath =
@@ -508,8 +445,8 @@ public class CreateModulePOM {
 
 						if (!dependencyFile.exists()) {
 							System.out.println(
-								"Path error at: " + parsedPath
-									+ " for module: " + _artifactId);
+								"Path error at: " + parsedPath +
+								 " for module: " + _artifactId);
 						}
 						else {
 							createDependencyElement(

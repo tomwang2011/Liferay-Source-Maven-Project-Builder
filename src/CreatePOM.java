@@ -13,6 +13,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 public class CreatePOM {
 
 	public static void createArtifactElements(
@@ -57,16 +58,6 @@ public class CreatePOM {
 		createPortalPOM(projectElement);
 	}
 
-	public static void createBuildElement(
-		Element portalSourceDirElement, Element projectElement) {
-
-		Element buildElement = document.createElement("build");
-
-		projectElement.appendChild(buildElement);
-
-		buildElement.appendChild(portalSourceDirElement);
-	}
-
 	public static void createDependenciesElement(
 		Element projectElement, int offset) {
 
@@ -107,32 +98,21 @@ public class CreatePOM {
 
 		dependencyElement.appendChild(dependencyVersionElement);
 
-		if (artifactIdToken[artifactIdToken.length - 1].endsWith("jar")) {
-			Element dependencyScopeElement = document.createElement("scope");
+		Element dependencyScopeElement = document.createElement("scope");
 
-			dependencyScopeElement.appendChild(document.createTextNode(
-				"system"));
+		dependencyScopeElement.appendChild(document.createTextNode("system"));
 
-			dependencyElement.appendChild(dependencyScopeElement);
+		dependencyElement.appendChild(dependencyScopeElement);
 
-			Element dependencySystemPathElement = document.createElement(
-				"systemPath");
+		Element dependencySystemPathElement = document.createElement(
+			"systemPath");
 
-			dependencySystemPathElement.appendChild(
-				document.createTextNode(dependencyToken));
+		dependencySystemPathElement.appendChild(
+			document.createTextNode(dependencyToken));
 
-			dependencyElement.appendChild(dependencySystemPathElement);
-		}
+		dependencyElement.appendChild(dependencySystemPathElement);
 
 		dependenciesElement.appendChild(dependencyElement);
-	}
-
-	public static void createModulePOM(
-		Element projectElement, Element portalSourceDirElement) {
-
-		createBuildElement(portalSourceDirElement, projectElement);
-
-		createDependenciesElement(projectElement, 1);
 	}
 
 	public static int createModulesElement(
@@ -183,8 +163,8 @@ public class CreatePOM {
 			"http://www.w3.org/2001/XMLSchema-instance");
 		projectElement.setAttribute(
 			"xsi:schemaLocation",
-			"http://maven.apache.org/POM/4.0.0 "
-			+ "http://maven.apache.org/maven-v4_0_0.xsd");
+			"http://maven.apache.org/POM/4.0.0 " +
+			 "http://maven.apache.org/maven-v4_0_0.xsd");
 
 		createArtifactElements(projectElement);
 	}
@@ -219,7 +199,7 @@ public class CreatePOM {
 	}
 
 	public static void createRepositoriesElement(
-			Element projectElement)
+		Element projectElement)
 		throws Exception {
 
 		Element repositoriesElement = document.createElement("repositories");
@@ -240,8 +220,8 @@ public class CreatePOM {
 	}
 
 	public static void createRepositoryElement(
-			Element repositoriesElement, String repoId,
-			String repoUrl)
+		Element repositoriesElement, String repoId,
+		String repoUrl)
 		throws Exception {
 
 		Element repositoryElement = document.createElement("repository");
@@ -267,17 +247,17 @@ public class CreatePOM {
 		parseArgument(args);
 
 		DocumentBuilderFactory documentBuilderFactory =
-			DocumentBuilderFactory.newInstance();
+			 DocumentBuilderFactory.newInstance();
 
 		DocumentBuilder documentBuilder =
-			documentBuilderFactory.newDocumentBuilder();
+			 documentBuilderFactory.newDocumentBuilder();
 
 		document = documentBuilder.newDocument();
 
 		createProjectElement();
 
 		TransformerFactory transformerFactory =
-			TransformerFactory.newInstance();
+			 TransformerFactory.newInstance();
 
 		Transformer transformer = transformerFactory.newTransformer();
 
@@ -317,9 +297,9 @@ public class CreatePOM {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(
-				"Insufficient number of inputs, please use the following order "
-				+ "of inputs: GroupId, ArtifactId, Version, Packaging, Name, "
-				+ "FullPath-to-module, Portal-path, Modules, Dependencies");
+				"Insufficient number of inputs, please use the following order " +
+				 "of inputs: GroupId, ArtifactId, Version, Packaging, Name, " +
+				 "FullPath-to-module, Portal-path, Modules, Dependencies");
 
 			System.exit(1);
 		}
