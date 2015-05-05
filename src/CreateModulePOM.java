@@ -1,4 +1,5 @@
 import java.io.File;
+
 import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -13,11 +14,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 public class CreateModulePOM {
 
-	public static void createArtifactElements(
-		Element projectElement) throws Exception {
+	public static void createArtifactElements(Element projectElement)
+		throws Exception {
+
+		// MOVE INTO HELPER FILE OR SEPARATE LOCATION TO AVOID REPEATED CODE
 
 		Element modelVersionElement = document.createElement("modelVersion");
 
@@ -74,16 +76,14 @@ public class CreateModulePOM {
 
 			path = path.substring(0, path.length() - 3) + "test";
 
-			testSourceDirElement.appendChild(document.createTextNode(
-				"${sourceDirectory}" + path));
+			testSourceDirElement.appendChild(
+				document.createTextNode("${sourceDirectory}" + path));
 
 			buildElement.appendChild(testSourceDirElement);
 		}
 	}
 
-	public static void createDependenciesElement(
-		Element projectElement) {
-
+	public static void createDependenciesElement(Element projectElement) {
 		Element dependenciesElement = document.createElement("dependencies");
 
 		projectElement.appendChild(dependenciesElement);
@@ -108,12 +108,12 @@ public class CreateModulePOM {
 		Element dependencyGroupIdElement = document.createElement("groupId");
 
 		if (artifactIdToken[0].equals("")) {
-			dependencyGroupIdElement.appendChild(document.createTextNode(
-				_groupId));
+			dependencyGroupIdElement.appendChild(
+				document.createTextNode(_groupId));
 		}
 		else {
-			dependencyGroupIdElement.appendChild(document.createTextNode(
-				dependencyTokens[0]));
+			dependencyGroupIdElement.appendChild(
+				document.createTextNode(dependencyTokens[0]));
 		}
 
 		dependencyElement.appendChild(dependencyGroupIdElement);
@@ -130,12 +130,12 @@ public class CreateModulePOM {
 		Element dependencyVersionElement = document.createElement("version");
 
 		if (artifactIdToken[0].equals("")) {
-			dependencyVersionElement.appendChild(document.createTextNode(
-				_version));
+			dependencyVersionElement.appendChild(
+				document.createTextNode(_version));
 		}
 		else {
-			dependencyVersionElement.appendChild(document.createTextNode(
-				dependencyTokens[1]));
+			dependencyVersionElement.appendChild(
+				document.createTextNode(dependencyTokens[1]));
 		}
 
 		dependencyElement.appendChild(dependencyVersionElement);
@@ -149,8 +149,8 @@ public class CreateModulePOM {
 
 				dependencyElement.appendChild(dependencyScopeElement);
 
-				Element exclusionsElement =
-					document.createElement("exclusions");
+				Element exclusionsElement = document.createElement(
+					"exclusions");
 
 				dependencyElement.appendChild(exclusionsElement);
 
@@ -158,16 +158,16 @@ public class CreateModulePOM {
 
 				exclusionsElement.appendChild(exclusionElement);
 
-				Element exclusionGroupIdElement =
-					document.createElement("groupId");
+				Element exclusionGroupIdElement = document.createElement(
+					"groupId");
 
 				exclusionElement.appendChild(exclusionGroupIdElement);
 
 				exclusionGroupIdElement.appendChild(
 					document.createTextNode("*"));
 
-				Element exclusionArtifactIdElement =
-					document.createElement("artifactId");
+				Element exclusionArtifactIdElement = document.createElement(
+					"artifactId");
 
 				exclusionElement.appendChild(exclusionArtifactIdElement);
 
@@ -185,8 +185,8 @@ public class CreateModulePOM {
 		if (artifactIdToken[artifactIdToken.length - 1].endsWith(".jar")) {
 			Element dependencyScopeElement = document.createElement("scope");
 
-			dependencyScopeElement.appendChild(document.createTextNode(
-				"system"));
+			dependencyScopeElement.appendChild(
+				document.createTextNode("system"));
 
 			dependencyElement.appendChild(dependencyScopeElement);
 
@@ -242,9 +242,7 @@ public class CreateModulePOM {
 			document.createTextNode("${sourceDirectory}" + path));
 	}
 
-	public static void createProjectElement()
-		throws Exception {
-
+	public static void createProjectElement() throws Exception {
 		Element projectElement = document.createElement("project");
 
 		document.appendChild(projectElement);
@@ -252,12 +250,11 @@ public class CreateModulePOM {
 		projectElement.setAttribute(
 			"xmlns", "http://maven.apache.org/POM/4.0.0");
 		projectElement.setAttribute(
-			"xmlns:xsi",
-			"http://www.w3.org/2001/XMLSchema-instance");
+			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		projectElement.setAttribute(
 			"xsi:schemaLocation",
 			"http://maven.apache.org/POM/4.0.0 " +
-			 "http://maven.apache.org/maven-v4_0_0.xsd");
+			"http://maven.apache.org/maven-v4_0_0.xsd");
 
 		createArtifactElements(projectElement);
 	}
@@ -320,10 +317,10 @@ public class CreateModulePOM {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(
-				"Insufficient number of inputs, please use the following order "
-				+"of inputs: GroupId, ArtifactId, Version, Packaging, Name, " +
-				"FullPath-to-module, Portal-path, Ivy-filepath, Build-filepath,"
-				+" Module-specific-dependencies");
+				"Insufficient number of inputs, please use the following" +
+				" order of inputs: GroupId, ArtifactId, Version, Packaging, " +
+				"Name, FullPath-to-module, Portal-path, Ivy-filepath, " +
+				"Build-filepath, Module-specific-dependencies");
 
 			System.exit(1);
 		}
@@ -338,28 +335,29 @@ public class CreateModulePOM {
 
 				ivyDocument.getDocumentElement().normalize();
 
-				NodeList ivyDependencyList =
-					ivyDocument.getElementsByTagName("dependency");
+				NodeList ivyDependencyList = ivyDocument.getElementsByTagName(
+					"dependency");
 
 				for (int i = 0; i < ivyDependencyList.getLength(); i++) {
 					Node ivyDependencyNode = ivyDependencyList.item(i);
 
-					Element ivyDependencyElement = (Element) ivyDependencyNode;
+					Element ivyDependencyElement = (Element)ivyDependencyNode;
 
 					String ivyDependency;
 
 					if (ivyDependencyElement.getAttribute("conf").isEmpty()) {
 						ivyDependency =
-							ivyDependencyElement.getAttribute("org") + ":"
-							+ ivyDependencyElement.getAttribute("rev") + ":"
-							+ ivyDependencyElement.getAttribute("name");
+							ivyDependencyElement.getAttribute("org") + ":" +
+							ivyDependencyElement.getAttribute("rev") + ":" +
+							ivyDependencyElement.getAttribute("name");
 					}
 					else {
-						String ivyConf =
-							ivyDependencyElement.getAttribute("conf");
+						String ivyConf = ivyDependencyElement.getAttribute(
+							"conf");
 
 						if (ivyConf.endsWith("master") &&
-							 !ivyConf.startsWith("internal")) {
+							!ivyConf.startsWith("internal")) {
+
 							ivyConf = "master";
 						}
 						else {
@@ -368,10 +366,11 @@ public class CreateModulePOM {
 
 						ivyDependency =
 							ivyDependencyElement.getAttribute("org") +
-							 ":" + ivyDependencyElement.getAttribute("rev") +
-							 ":" + ivyConf + ":" +
-							 ivyDependencyElement.getAttribute("name");
+							":" + ivyDependencyElement.getAttribute("rev") +
+							":" + ivyConf + ":" +
+							ivyDependencyElement.getAttribute("name");
 					}
+
 					createDependencyElement(dependenciesElement, ivyDependency);
 				}
 			}
@@ -385,54 +384,68 @@ public class CreateModulePOM {
 		try {
 			File moduleBuildFile = new File(_moduleBuildFile);
 
-			Document moduleBuildFileDocument =
-				documentBuilder.parse(moduleBuildFile);
+			Document moduleBuildFileDocument = documentBuilder.parse(
+				moduleBuildFile);
 
-			moduleBuildFileDocument.getDocumentElement().normalize();
+			Element moduleBuildFileElement =
+				moduleBuildFileDocument.getDocumentElement();
+
+			moduleBuildFileElement.normalize();
 
 			NodeList modulePropertyList =
 				moduleBuildFileDocument.getElementsByTagName("property");
 
 			for (int i = 0; i < modulePropertyList.getLength(); i++) {
 				Element modulePropertyElement =
-					(Element) modulePropertyList.item(i);
+					(Element)modulePropertyList.item(i);
 
-				if (modulePropertyElement.getAttribute("name").equals("import.shared")) {
+				String modulePropertyElementName =
+					modulePropertyElement.getAttribute("name");
+
+				if (modulePropertyElementName.equals("import.shared")) {
+					String moduleDependencyString =
+						modulePropertyElement.getAttribute("value");
+
 					String[] moduleDependencyList =
-						modulePropertyElement.getAttribute("value").split(",");
+						moduleDependencyString.split(",");
 
 					for (String moduleDependency : moduleDependencyList) {
-						String[] moduleDependencySplit =
-							moduleDependency.split("/");
+						String[] moduleDependencySplit = moduleDependency.split(
+							"/");
 
-						createDependencyElement(dependenciesElement, _groupId +
-							":" + _version + ":" +
-							moduleDependencySplit[moduleDependencySplit.length -1]);
+						createDependencyElement(
+							dependenciesElement, _groupId + ":" + _version +
+							":" + moduleDependencySplit[
+								moduleDependencySplit.length -1]);
 					}
 				}
 			}
-			NodeList webLibPathNodeList =
+
+			NodeList webLibPathNodes =
 				moduleBuildFileDocument.getElementsByTagName("path");
 
-			for (int i = 0; i < webLibPathNodeList.getLength(); i++) {
-				Element webLibPathElement =
-					(Element) webLibPathNodeList.item(i);
+			for (int i = 0; i < webLibPathNodes.getLength(); i++) {
+				Element webLibPathElement = (Element)webLibPathNodes.item(i);
 
-				if (webLibPathElement.getAttribute("id").equals("web-lib.classpath")) {
+				String webLibPathElementId = webLibPathElement.getAttribute(
+					"id");
+
+				if (webLibPathElementId.equals("web-lib.classpath")) {
 					NodeList filesetNodeList =
 						webLibPathElement.getElementsByTagName("fileset");
 
-					Element filesetElement = (Element) filesetNodeList.item(0);
+					Element filesetElement = (Element)filesetNodeList.item(0);
 
-					String[] libDependencyList =
-						filesetElement.getAttribute("includes").split(",");
+					String libDependencyString = filesetElement.getAttribute(
+						"includes");
 
-					String libDependencyPath =
-						filesetElement.getAttribute("dir");
+					String[] libDependencyList = libDependencyString.split(",");
 
-					String parsedPath =
-						libDependencyPath.replace(
-							"${project.dir}", _portalPath);
+					String libDependencyPath = filesetElement.getAttribute(
+						"dir");
+
+					String parsedPath = libDependencyPath.replace(
+						"${project.dir}", _portalPath);
 
 					for (String libDependency : libDependencyList) {
 						libDependencyPath = parsedPath + "/" + libDependency;
@@ -440,7 +453,8 @@ public class CreateModulePOM {
 						File dependencyFile = new File(libDependencyPath);
 
 						if (!dependencyFile.exists()) {
-							System.out.println("Path error at: " + parsedPath +
+							System.out.println(
+								"Path error at: " + parsedPath +
 								" for module: " + _artifactId);
 						}
 						else {
@@ -456,9 +470,6 @@ public class CreateModulePOM {
 		}
 	}
 
-	private static Document document;
-	private static DocumentBuilder documentBuilder;
-	private static DocumentBuilderFactory documentBuilderFactory;
 	private static String _artifactId;
 	private static String _fullPath;
 	private static String _groupId;
@@ -469,4 +480,8 @@ public class CreateModulePOM {
 	private static String _portalPath;
 	private static String[] _tokens;
 	private static String _version;
+	private static Document document;
+	private static DocumentBuilder documentBuilder;
+	private static DocumentBuilderFactory documentBuilderFactory;
+
 }

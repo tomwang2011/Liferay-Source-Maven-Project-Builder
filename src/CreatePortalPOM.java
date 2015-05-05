@@ -1,4 +1,6 @@
+* C source, ASCII text
 import java.io.File;
+
 import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,8 +16,8 @@ import org.w3c.dom.Element;
 
 public class CreatePortalPOM {
 
-	public static void createArtifactElements(
-		Element projectElement) throws Exception {
+	public static void createArtifactElements(Element projectElement)
+		throws Exception {
 
 		Element modelVersionElement = document.createElement("modelVersion");
 
@@ -113,9 +115,7 @@ public class CreatePortalPOM {
 		dependenciesElement.appendChild(dependencyElement);
 	}
 
-	public static int createModulesElement(
-		Element projectElement) {
-
+	public static int createModulesElement(Element projectElement) {
 		Element modulesElement = document.createElement("modules");
 
 		projectElement.appendChild(modulesElement);
@@ -147,9 +147,7 @@ public class CreatePortalPOM {
 		createRepositoriesElement(projectElement);
 	}
 
-	public static void createProjectElement()
-		throws Exception {
-
+	public static void createProjectElement() throws Exception {
 		Element projectElement = document.createElement("project");
 
 		document.appendChild(projectElement);
@@ -157,18 +155,16 @@ public class CreatePortalPOM {
 		projectElement.setAttribute(
 			"xmlns", "http://maven.apache.org/POM/4.0.0");
 		projectElement.setAttribute(
-			"xmlns:xsi",
-			"http://www.w3.org/2001/XMLSchema-instance");
+			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		projectElement.setAttribute(
 			"xsi:schemaLocation",
 			"http://maven.apache.org/POM/4.0.0 " +
-			 "http://maven.apache.org/maven-v4_0_0.xsd");
+			"http://maven.apache.org/maven-v4_0_0.xsd");
 
 		createArtifactElements(projectElement);
 	}
 
 	public static void createPropertiesElement(Element projectElement) {
-
 		Element propertiesElement = document.createElement("properties");
 
 		projectElement.appendChild(propertiesElement);
@@ -176,8 +172,7 @@ public class CreatePortalPOM {
 		Element portalSourceDirElement = document.createElement(
 			"sourceDirectory");
 
-		portalSourceDirElement.appendChild(document.createTextNode(
-			_fullPath));
+		portalSourceDirElement.appendChild(document.createTextNode(_fullPath));
 
 		propertiesElement.appendChild(portalSourceDirElement);
 
@@ -196,8 +191,7 @@ public class CreatePortalPOM {
 		propertiesElement.appendChild(compilerTargetElement);
 	}
 
-	public static void createRepositoriesElement(
-		Element projectElement)
+	public static void createRepositoriesElement(Element projectElement)
 		throws Exception {
 
 		Element repositoriesElement = document.createElement("repositories");
@@ -218,8 +212,7 @@ public class CreatePortalPOM {
 	}
 
 	public static void createRepositoryElement(
-		Element repositoriesElement, String repoId,
-		String repoUrl)
+			Element repositoriesElement, String repoId, String repoUrl)
 		throws Exception {
 
 		Element repositoryElement = document.createElement("repository");
@@ -230,32 +223,30 @@ public class CreatePortalPOM {
 
 		repositoryElement.appendChild(repositoryIdElement);
 
-		repositoryIdElement.appendChild(
-			document.createTextNode(repoId));
+		repositoryIdElement.appendChild(document.createTextNode(repoId));
 
 		Element repositoryURLElement = document.createElement("url");
 
 		repositoryElement.appendChild(repositoryURLElement);
 
-		repositoryURLElement.appendChild(document.createTextNode(
-			repoUrl));
+		repositoryURLElement.appendChild(document.createTextNode(repoUrl));
 	}
 
 	public static void main(String[] args) throws Exception {
 		parseArgument(args);
 
 		DocumentBuilderFactory documentBuilderFactory =
-			 DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory.newInstance();
 
 		DocumentBuilder documentBuilder =
-			 documentBuilderFactory.newDocumentBuilder();
+			documentBuilderFactory.newDocumentBuilder();
 
 		document = documentBuilder.newDocument();
 
 		createProjectElement();
 
 		TransformerFactory transformerFactory =
-			 TransformerFactory.newInstance();
+			TransformerFactory.newInstance();
 
 		Transformer transformer = transformerFactory.newTransformer();
 
@@ -295,15 +286,14 @@ public class CreatePortalPOM {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(
-				"Insufficient number of inputs, please use the following order "
-				+ "of inputs: GroupId, ArtifactId, Version, Packaging, Name, "
-				+ "FullPath-to-module, Modules, Dependencies");
+				"Insufficient number of inputs, please use the following " +
+				"order of inputs: GroupId, ArtifactId, Version, Packaging, " +
+				"Name, FullPath-to-module, Modules, Dependencies");
 
 			System.exit(1);
 		}
 	}
 
-	private static Document document;
 	private static String _artifactId;
 	private static String _fullPath;
 	private static String _groupId;
@@ -311,4 +301,6 @@ public class CreatePortalPOM {
 	private static String _packaging;
 	private static String[] _tokens;
 	private static String _version;
+	private static Document document;
+
 }
