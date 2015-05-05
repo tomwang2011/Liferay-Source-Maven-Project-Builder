@@ -323,9 +323,10 @@ public class CreateModulePOM {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(
-				"Insufficient number of inputs, please use the following order " +
-				 "of inputs: GroupId, ArtifactId, Version, Packaging, Name, " +
-				 "FullPath-to-module, Portal-path, Modules, Dependencies");
+				"Insufficient number of inputs, please use the following order "
+				+"of inputs: GroupId, ArtifactId, Version, Packaging, Name, " +
+				"FullPath-to-module, Portal-path, Ivy-filepath, Build-filepath,"
+				+" Module-specific-dependencies");
 
 			System.exit(1);
 		}

@@ -297,9 +297,9 @@ public class CreatePortalPOM {
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(
-				"Insufficient number of inputs, please use the following order " +
-				 "of inputs: GroupId, ArtifactId, Version, Packaging, Name, " +
-				 "FullPath-to-module, Portal-path, Modules, Dependencies");
+				"Insufficient number of inputs, please use the following order "
+				+ "of inputs: GroupId, ArtifactId, Version, Packaging, Name, "
+				+ "FullPath-to-module, Modules, Dependencies");
 
 			System.exit(1);
 		}
