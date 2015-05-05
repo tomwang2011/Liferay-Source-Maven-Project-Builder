@@ -4,7 +4,6 @@
 	<!--Set to Liferay Portal directory-->
 	<property name="portal.dir" value="/liferaysc/portal" />
 	<property name="tomcat.dir" value="/liferaysc/tomcat/tomcat-7.0.42" />
-
 	<property name="app.server.lib.global.dir" value="${tomcat.dir}/lib/ext" />
 	<property name="app.server.lib.portal.dir" value="${tomcat.dir}/webapps/ROOT/WEB-INF/lib" />
 	<property name="groupId" value="com.liferay" />
@@ -13,6 +12,12 @@
 	<property name="project.dir" value="${basedir}/portal" />
 	<property name="sdk.dir" value="${portal.dir}/tools/sdk" />
 	<property name="version" value="1.0.0" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${portal.dir}/lib/development/ant-contrib.jar" />
+		</classpath>
+	</taskdef>
 
 	<path id="module.classpath">
 		<fileset dir="${app.server.lib.global.dir}" includes="*.jar" />
@@ -35,12 +40,6 @@
 		project.setProperty(attributes.get("extension"), module.substring(index+1, module.length()));
 		]]>
 	</scriptdef>
-
-	<taskdef resource="net/sf/antcontrib/antlib.xml">
-		<classpath>
-			<pathelement location="${portal.dir}/lib/development/ant-contrib.jar" />
-		</classpath>
-	</taskdef>
 
 	<macrodef name="append-dependency-list">
 		<attribute name="dependency" />
@@ -68,47 +67,12 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="append-module-list">
-		<sequential>
-			<if>
-				<equals arg1="${module.list}" arg2="" />
-				<then>
-					<var name="concat" value="${src.dir.name}" />
-				</then>
-				<else>
-					<var name="concat" value="${module.list} ${src.dir.name}" />
-				</else>
-			</if>
-			<var name="module.list" value="${concat}" />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="clean-up">
-		<sequential>
-			<delete dir="ivytopom" quiet="true"/>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="compile-java">
-		<sequential>
-			<mkdir dir="classes" />
-
-			<javac
-				srcdir="${basedir}/src"
-				destdir="${basedir}/classes"
-				includeantruntime="false"
-			/>
-		</sequential>
-	</macrodef>
-
 	<macrodef name="deploy-module-pom">
 		<attribute name="module" />
 		<attribute name="src.dir.name" />
 
 		<sequential>
-			<solve-module-specific-dependencies
-				src.dir.name="@{src.dir.name}"
-			/>
+			<solve-module-specific-dependencies	src.dir.name="@{src.dir.name}" />
 
 			<if>
 				<available file="${src.dir}/ivy.xml" />
@@ -117,37 +81,6 @@
 				</then>
 			</if>
 
-			<parse-build-files
-				module="@{module}"
-				src.dir.name="@{src.dir.name}"
-			/>
-
-			<java classname="CreateModulePOM" classpath="${basedir}/classes">
-				<arg value="${groupId}" />
-				<arg value="@{src.dir.name}" />
-				<arg value="${version}" />
-				<arg value="jar" />
-				<arg value="@{src.dir.name}" />
-				<arg value="@{module}" />
-				<arg value="${portal.dir}" />
-				<arg value="${ivy.module.dependency}" />
-				<arg value="${module.build.file}" />
-
-				<arg line="${module.dependency.list}" />
-			</java>
-
-			<var name="module.lib.classpath.convert" unset="true" />
-			<var name="module.build.file" unset="true" />
-			<var name="module.dependency.list" unset="true" />
-			<var name="module.dependency.list" value="" />
-			<var name="ivy.module.dependency" unset="true" />
-		</sequential>
-	</macrodef>
-
-	<macrodef name="parse-build-files">
-		<attribute name="src.dir.name" />
-		<attribute name="module" />
-		<sequential>
 			<if>
 				<available file="@{module}/../build.xml" />
 				<then>
@@ -161,6 +94,24 @@
 				</elseif>
 			</if>
 
+			<java classname="CreateModulePOM" classpath="${basedir}/classes">
+				<arg value="${groupId}" />
+				<arg value="@{src.dir.name}" />
+				<arg value="${version}" />
+				<arg value="jar" />
+				<arg value="@{src.dir.name}" />
+				<arg value="@{module}" />
+				<arg value="${portal.dir}" />
+				<arg value="${ivy.module.dependency}" />
+				<arg value="${module.build.file}" />
+				<arg line="${module.dependency.list}" />
+			</java>
+
+			<var name="module.lib.classpath.convert" unset="true" />
+			<var name="module.build.file" unset="true" />
+			<var name="module.dependency.list" unset="true" />
+			<var name="module.dependency.list" value="" />
+			<var name="ivy.module.dependency" unset="true" />
 		</sequential>
 	</macrodef>
 
@@ -201,13 +152,11 @@
 					<equals arg1="${module.extension}" arg2="test" />
 				</and>
 				<then>
-					<append-dependency-list
-						dependency="portal-test-internal"
-					/>
+					<append-dependency-list	dependency="portal-test-internal" />
 				</then>
 			</if>
 
-			<property file="dependencies.properties" prefix="appender." />
+			<property file="dependency.properties" prefix="appender." />
 
 			<propertyselector property="appenders" match="appender\.(.*)" select="\1" />
 
@@ -218,9 +167,7 @@
 						<then>
 							<for list="${appender.@{module.name}}" param="dependency" delimiter=";">
 								<sequential>
-									<append-dependency-list
-										dependency="@{dependency}"
-									/>
+									<append-dependency-list	dependency="@{dependency}" />
 								</sequential>
 							</for>
 						</then>
@@ -228,7 +175,7 @@
 				</sequential>
 			</for>
 
-			<property file="ext-dependencies.properties" prefix="appender.ext." />
+			<property file="dependency-ext.properties" prefix="appender.ext." />
 
 			<propertyselector property="appenders.ext" match="appender\.ext\.(.*)" select="\1" />
 
@@ -259,11 +206,17 @@
 	<target name="clean">
 		<delete dir="portal" quiet="true" />
 		<delete dir="classes" quiet="true" />
-		<clean-up />
+		<delete dir="ivytopom" quiet="true"/>
 	</target>
 
 	<target name="deploy-all-module">
-		<compile-java />
+		<mkdir dir="classes" />
+
+		<javac
+			srcdir="${basedir}/src"
+			destdir="${basedir}/classes"
+			includeantruntime="false"
+		/>
 
 		<for param="module">
 			<path>
@@ -272,16 +225,23 @@
 				</dirset>
 			</path>
 			<sequential>
-				<set-module-source-directory
-					module="@{module}"
-				/>
+				<set-module-source-directory module="@{module}" />
 
 				<if>
 					<available file="${src.dir}/build.xml" />
 					<then>
 						<mkdir dir="${project.dir}/${src.dir.name}" />
 
-						<append-module-list />
+						<if>
+							<equals arg1="${module.list}" arg2="" />
+							<then>
+								<var name="concat" value="${src.dir.name}" />
+							</then>
+							<else>
+								<var name="concat" value="${module.list} ${src.dir.name}" />
+							</else>
+						</if>
+						<var name="module.list" value="${concat}" />
 					</then>
 				</if>
 
@@ -297,17 +257,12 @@
 				</dirset>
 			</path>
 			<sequential>
-				<set-module-source-directory
-					module="@{module}"
-				/>
+				<set-module-source-directory module="@{module}"	/>
 
 				<if>
 					<available file="${src.dir}/build.xml" />
 					<then>
-						<deploy-module-pom
-							src.dir.name="${src.dir.name}"
-							module="@{module}"
-						/>
+						<deploy-module-pom src.dir.name="${src.dir.name}" module="@{module}" />
 					</then>
 				</if>
 
@@ -327,11 +282,10 @@
 			<arg value="pom" />
 			<arg value="Liferay Portal" />
 			<arg value="${portal.dir}" />
-
 			<arg line="${module.list}" />
 			<arg line="${module.classpath.convert}" />
 		</java>
 
-		<clean-up />
+		<delete dir="ivytopom" quiet="true"/>
 	</target>
 </project>
