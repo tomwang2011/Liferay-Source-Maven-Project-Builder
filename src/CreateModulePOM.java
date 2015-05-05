@@ -1,6 +1,4 @@
-
 import java.io.File;
-
 import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -94,8 +92,8 @@ public class CreateModulePOM {
 
 		parseIvyDependencies(dependenciesElement);
 
-		for (int i = 0; i < _tokens.length; i++) {
-			createDependencyElement(dependenciesElement, _tokens[i]);
+		for (String _token : _tokens) {
+			createDependencyElement(dependenciesElement, _token);
 		}
 	}
 
@@ -182,7 +180,6 @@ public class CreateModulePOM {
 
 				dependencyElement.appendChild(dependencyScopeElement);
 			}
-
 		}
 
 		if (artifactIdToken[artifactIdToken.length - 1].endsWith(".jar")) {
@@ -348,13 +345,14 @@ public class CreateModulePOM {
 					Node ivyDependencyNode = ivyDependencyList.item(i);
 
 					Element ivyDependencyElement = (Element) ivyDependencyNode;
+
 					String ivyDependency;
 
 					if (ivyDependencyElement.getAttribute("conf").isEmpty()) {
 						ivyDependency =
-							ivyDependencyElement.getAttribute("org") +
-							 ":" + ivyDependencyElement.getAttribute("rev") +
-							 ":" + ivyDependencyElement.getAttribute("name");
+							ivyDependencyElement.getAttribute("org") + ":"
+							+ ivyDependencyElement.getAttribute("rev") + ":"
+							+ ivyDependencyElement.getAttribute("name");
 					}
 					else {
 						String ivyConf =
@@ -403,15 +401,13 @@ public class CreateModulePOM {
 					String[] moduleDependencyList =
 						modulePropertyElement.getAttribute("value").split(",");
 
-					for (int j = 0; j < moduleDependencyList.length; j++) {
+					for (String moduleDependency : moduleDependencyList) {
 						String[] moduleDependencySplit =
-							moduleDependencyList[j].split("/");
+							moduleDependency.split("/");
 
 						createDependencyElement(dependenciesElement, _groupId +
-							 ":" + _version + ":" +
-
-							moduleDependencySplit[moduleDependencySplit.length -
-							1]);
+							":" + _version + ":" +
+							moduleDependencySplit[moduleDependencySplit.length -1]);
 					}
 				}
 			}
@@ -438,16 +434,14 @@ public class CreateModulePOM {
 						libDependencyPath.replace(
 							"${project.dir}", _portalPath);
 
-					for (int j = 0; j < libDependencyList.length; j++) {
-						libDependencyPath =
-							parsedPath + "/" + libDependencyList[j];
+					for (String libDependency : libDependencyList) {
+						libDependencyPath = parsedPath + "/" + libDependency;
 
 						File dependencyFile = new File(libDependencyPath);
 
 						if (!dependencyFile.exists()) {
-							System.out.println(
-								"Path error at: " + parsedPath +
-								 " for module: " + _artifactId);
+							System.out.println("Path error at: " + parsedPath +
+								" for module: " + _artifactId);
 						}
 						else {
 							createDependencyElement(
@@ -460,7 +454,6 @@ public class CreateModulePOM {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private static Document document;

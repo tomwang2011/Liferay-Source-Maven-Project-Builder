@@ -1,6 +1,4 @@
-
 import java.io.File;
-
 import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
