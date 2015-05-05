@@ -324,7 +324,7 @@
 	<target name="deploy-portal-pom" depends="deploy-all-module">
 		<pathconvert property="module.classpath.convert" refid="module.classpath" pathsep=" " />
 
-		<java classname="CreatePOM" classpath="${basedir}/classes">
+		<java classname="CreatePortalPOM" classpath="${basedir}/classes">
 			<arg value="${groupId}" />
 			<arg value="portal" />
 			<arg value="${version}" />
