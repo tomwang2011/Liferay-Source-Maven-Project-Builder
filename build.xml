@@ -2,8 +2,7 @@
 
 <project name="MavenPortal" basedir="." default="deploy-portal-pom" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<!--Set to Liferay Portal directory-->
-	<property name="portal.dir" value="/liferaysc/portal" />
-	<property name="tomcat.dir" value="/liferaysc/tomcat/tomcat-7.0.42" />
+	<property file="build.properties" />
 
 	<property name="app.server.lib.global.dir" value="${tomcat.dir}/lib/ext" />
 	<property name="app.server.lib.portal.dir" value="${tomcat.dir}/webapps/ROOT/WEB-INF/lib" />
