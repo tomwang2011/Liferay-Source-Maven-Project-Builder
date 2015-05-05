@@ -1,19 +1,21 @@
 ant
 deploy-portal-pom depends on
 	deploy-all-module
-		compile-java: compile CreatePOM
-		For loop for all modules
-			deploy-module-pom
-				solve-module-specific-dependencies (using if-elseif)
-					parser: parse module name
-					append-module-dependency-list
-				java createPOM
-				ivy-convert: makePOM
-				append-ivy-dependency
-					paste in dependencies (using replace)
+		compile-java
+		First Forloop:
+			set-module-source-directory
+			make directory
 			append-module-list
-	java createPOM: portal POM
-	clean-up: delete ivy directory
+		Second Forloop:
+			set-module-source-directory
+			deploy-module-pom
+				solve-module-specific-dependencies (from propertie files)
+					append-dependency-list
+				set ivy file property
+				parse-build-files (check if theres WEB-INF)
+				Java CreateModulePOM
+CreatePortalPOM
+Clean-up
 
 java
 CreatePortalPOM
