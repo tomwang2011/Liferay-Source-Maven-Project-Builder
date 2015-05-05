@@ -14,7 +14,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class CreatePOM {
+public class CreatePortalPOM {
 
 	public static void createArtifactElements(
 		Element projectElement) throws Exception {
@@ -313,5 +313,4 @@ public class CreatePOM {
 	private static String _packaging;
 	private static String[] _tokens;
 	private static String _version;
-
 }

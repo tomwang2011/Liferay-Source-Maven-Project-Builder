@@ -16,20 +16,30 @@ deploy-portal-pom depends on
 	clean-up: delete ivy directory
 
 java
-main
-	parseArguments: variables easier to use
-	createProjectElement
-		createArtifactElement
-			createParentElementProperties: if not portal
-			createPortalPOM: if portal
-				createPropertiesElement: setting compiler version
-				createModuleElement
-				createDependenciesElement
-					createDependencyElement
-				createRepositoriesElement
-					createRepositoryElement
-			createModulePOM: if not portal
-				createBuildElement
-				createDependenciesElement
-					createDependencyElement
-	create the POM file
+CreatePortalPOM
+	main
+		parseArguments
+		createProjectElement
+			createArtifactElement
+				createPortalPOM
+					createPropertiesElement
+					createModulesElement
+					createDependenciesElement
+						createDependencyElement
+					createRepositoriesElement
+						createRepositoryElement
+		output POM file
+
+CreateModulePOM
+	main
+		parseArguments
+		createProjectElement
+			createArtifactElement
+				createParentElement
+				createModulePOM
+					createBuildElement
+					createDependenciesElement
+						parseModuleBuildFile
+						parseIvyDependencies
+						createDependencyElement
+		output POM file

@@ -475,5 +475,4 @@ public class CreateModulePOM {
 	private static String _portalPath;
 	private static String[] _tokens;
 	private static String _version;
-
 }
