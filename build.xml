@@ -198,13 +198,9 @@
 			<parser module="@{src.dir.name}" splitter="-" property="module.name" extension="module.extension" />
 			<if>
 				<and>
-					<available file="${project.dir}/${module.name}-web" type="dir" />
 					<equals arg1="${module.extension}" arg2="test" />
 				</and>
 				<then>
-					<append-dependency-list
-						dependency="${module.name}-web"
-					/>
 					<append-dependency-list
 						dependency="portal-test-internal"
 					/>
@@ -336,6 +332,6 @@
 			<arg line="${module.classpath.convert}" />
 		</java>
 
-		<!--		<clean-up />-->
+		<clean-up />
 	</target>
 </project>
