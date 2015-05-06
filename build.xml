@@ -7,12 +7,10 @@
 
 	<property name="app.server.lib.global.dir" value="${tomcat.dir}/lib/ext" />
 	<property name="app.server.lib.portal.dir" value="${tomcat.dir}/webapps/ROOT/WEB-INF/lib" />
-	<property name="groupId" value="com.liferay" />
 	<property name="module.dependency.list" value="" />
 	<property name="module.list" value="" />
 	<property name="project.dir" value="${basedir}/portal" />
 	<property name="sdk.dir" value="${portal.dir}/tools/sdk" />
-	<property name="version" value="1.0.0" />
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
@@ -76,31 +74,27 @@
 			<solve-module-specific-dependencies	src.dir.name="@{src.dir.name}" />
 
 			<if>
-				<available file="${src.dir}/ivy.xml" />
+				<equals arg1="${dependencies.off}" arg2="false" />
 				<then>
-					<var name="ivy.module.dependency" value="${src.dir}/ivy.xml" />
-				</then>
-			</if>
+					<if>
+						<available file="${src.dir}/ivy.xml" />
+						<then>
+							<var name="ivy.module.dependency" value="${src.dir}/ivy.xml" />
+						</then>
+					</if>
 
-			<if>
-				<available file="@{module}/../build.xml" />
-				<then>
-					<var name="module.build.file" value="@{module}/../build.xml" />
-				</then>
-				<elseif>
-					<available file="@{module}/../../../build.xml" />
-					<then>
-						<var name="module.build.file" value="@{module}/../../../build.xml" />
-					</then>
-				</elseif>
-			</if>
-
-			<if>
-				<equals arg1="${dependencies.off}" arg2="true" />
-				<then>
-					<var name="ivy.module.dependency" unset="true" />
-					<var name="module.build.file" unset="true" />
-					<var name="module.dependency.list" value="" />
+					<if>
+						<available file="@{module}/../build.xml" />
+						<then>
+							<var name="module.build.file" value="@{module}/../build.xml" />
+						</then>
+						<elseif>
+							<available file="@{module}/../../../build.xml" />
+							<then>
+								<var name="module.build.file" value="@{module}/../../../build.xml" />
+							</then>
+						</elseif>
+					</if>
 				</then>
 			</if>
 
@@ -117,7 +111,6 @@
 				<arg line="${module.dependency.list}" />
 			</java>
 
-			<var name="module.lib.classpath.convert" unset="true" />
 			<var name="module.build.file" unset="true" />
 			<var name="module.dependency.list" unset="true" />
 			<var name="module.dependency.list" value="" />
