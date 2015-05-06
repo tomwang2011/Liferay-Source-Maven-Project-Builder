@@ -3,7 +3,9 @@ import org.w3c.dom.Element;
 
 public class CreatePOM {
 
-	public static void createArtifactElements(Document document, Element projectElement, String _artifactId, String _groupId, String _name, String _packaging, String _version)
+	public static void createArtifactElements(Document document,
+		Element projectElement, String _artifactId, String _groupId,
+		String _name, String _packaging, String _version)
 		throws Exception {
 
 		Element modelVersionElement = document.createElement("modelVersion");
@@ -42,7 +44,9 @@ public class CreatePOM {
 
 		projectElement.appendChild(nameElement);
 	}
-	public static Element createProjectElement(Document document, String _artifactId, String _groupId, String _name, String _packaging, String _version) throws Exception {
+	public static Element createProjectElement(Document document,
+		String _artifactId, String _groupId, String _name, String _packaging,
+		String _version) throws Exception {
 		Element projectElement = document.createElement("project");
 
 		document.appendChild(projectElement);
@@ -56,8 +60,9 @@ public class CreatePOM {
 			"http://maven.apache.org/POM/4.0.0 " +
 			"http://maven.apache.org/maven-v4_0_0.xsd");
 
-		createArtifactElements(document,projectElement,_artifactId,_groupId,_name,_packaging,_version);
-		
+		createArtifactElements(document,projectElement,_artifactId,
+			_groupId,_name,_packaging,_version);
+
 		return projectElement;
 	}
 }
