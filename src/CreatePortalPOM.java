@@ -87,6 +87,8 @@ public class CreatePortalPOM {
 			modulesElement.appendChild(moduleElement);
 
 			i++;
+
+			if(i==_tokens.length) break;
 		}
 
 		return (i);

@@ -95,6 +95,15 @@
 				</elseif>
 			</if>
 
+			<if>
+				<equals arg1="${dependencies.off}" arg2="true" />
+				<then>
+					<var name="ivy.module.dependency" unset="true" />
+					<var name="module.build.file" unset="true" />
+					<var name="module.dependency.list" value="" />
+				</then>
+			</if>
+
 			<java classname="CreateModulePOM" classpath="${basedir}/classes">
 				<arg value="${groupId}" />
 				<arg value="@{src.dir.name}" />
@@ -276,6 +285,13 @@
 
 	<target name="deploy-portal-pom" depends="deploy-all-module">
 		<pathconvert property="module.classpath.convert" refid="module.classpath" pathsep=" " />
+
+		<if>
+				<equals arg1="${dependencies.off}" arg2="true" />
+				<then>
+					<var name="module.classpath.convert" value="" />
+				</then>
+		</if>
 
 		<java classname="CreatePortalPOM" classpath="${basedir}/classes">
 			<arg value="${groupId}" />
