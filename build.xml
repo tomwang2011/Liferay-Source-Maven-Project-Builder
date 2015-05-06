@@ -150,6 +150,7 @@
 			<parser module="@{src.dir.name}" splitter="-" property="module.name" extension="module.extension" />
 			<if>
 				<and>
+					<available file="${project.dir}/${module.name}-web" type="dir" />
 					<equals arg1="${module.extension}" arg2="test" />
 				</and>
 				<then>

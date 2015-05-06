@@ -16,49 +16,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 public class CreateModulePOM {
 
-	public static void createArtifactElements(Element projectElement)
-		throws Exception {
-
-		// MOVE INTO HELPER FILE OR SEPARATE LOCATION TO AVOID REPEATED CODE
-
-		Element modelVersionElement = document.createElement("modelVersion");
-
-		modelVersionElement.appendChild(document.createTextNode("4.0.0"));
-
-		projectElement.appendChild(modelVersionElement);
-
-		Element portalSourceDirElement = document.createElement(
-			"sourceDirectory");
-
-		createParentElement(projectElement, portalSourceDirElement);
-
-		Element artifactIdElement = document.createElement("artifactId");
-
-		artifactIdElement.appendChild(document.createTextNode(_artifactId));
-
-		projectElement.appendChild(artifactIdElement);
-
-		Element versionElement = document.createElement("version");
-
-		versionElement.appendChild(document.createTextNode(_version));
-
-		projectElement.appendChild(versionElement);
-
-		Element packagingElement = document.createElement("packaging");
-
-		packagingElement.appendChild(document.createTextNode(_packaging));
-
-		projectElement.appendChild(packagingElement);
-
-		Element nameElement = document.createElement("name");
-
-		nameElement.appendChild(document.createTextNode(_name));
-
-		projectElement.appendChild(nameElement);
-
-		createModulePOM(projectElement, portalSourceDirElement);
-	}
-
 	public static void createBuildElement(
 		Element portalSourceDirElement, Element projectElement) {
 
@@ -243,20 +200,15 @@ public class CreateModulePOM {
 	}
 
 	public static void createProjectElement() throws Exception {
-		Element projectElement = document.createElement("project");
+		Element projectElement = CreatePOM.createProjectElement(
+			document, _artifactId, _groupId, _name, _packaging, _version);
 
-		document.appendChild(projectElement);
+		Element portalSourceDirElement = document.createElement(
+			"sourceDirectory");
 
-		projectElement.setAttribute(
-			"xmlns", "http://maven.apache.org/POM/4.0.0");
-		projectElement.setAttribute(
-			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		projectElement.setAttribute(
-			"xsi:schemaLocation",
-			"http://maven.apache.org/POM/4.0.0 " +
-			"http://maven.apache.org/maven-v4_0_0.xsd");
+		createParentElement(projectElement, portalSourceDirElement);
 
-		createArtifactElements(projectElement);
+		createModulePOM(projectElement, portalSourceDirElement);
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -381,6 +333,7 @@ public class CreateModulePOM {
 	}
 
 	public static void parseModuleBuildFile(Element dependenciesElement) {
+		if (!_moduleBuildFile.startsWith("$")) {
 		try {
 			File moduleBuildFile = new File(_moduleBuildFile);
 
@@ -467,6 +420,7 @@ public class CreateModulePOM {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+		}
 		}
 	}
 
