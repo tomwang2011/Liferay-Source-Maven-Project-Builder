@@ -251,5 +251,4 @@ public class CreatePortalPOM {
 	private static String[] _tokens;
 	private static String _version;
 	private static Document document;
-
 }

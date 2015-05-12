@@ -1,3 +1,4 @@
+
 import java.io.File;
 
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 public class CreateModulePOM {
 
 	public static void createBuildElement(
@@ -293,7 +295,7 @@ public class CreateModulePOM {
 				for (int i = 0; i < ivyDependencyList.getLength(); i++) {
 					Node ivyDependencyNode = ivyDependencyList.item(i);
 
-					Element ivyDependencyElement = (Element)ivyDependencyNode;
+					Element ivyDependencyElement = (Element) ivyDependencyNode;
 
 					String ivyDependency;
 
@@ -334,93 +336,97 @@ public class CreateModulePOM {
 
 	public static void parseModuleBuildFile(Element dependenciesElement) {
 		if (!_moduleBuildFile.startsWith("$")) {
-		try {
-			File moduleBuildFile = new File(_moduleBuildFile);
+			try {
+				File moduleBuildFile = new File(_moduleBuildFile);
 
-			Document moduleBuildFileDocument = documentBuilder.parse(
-				moduleBuildFile);
+				Document moduleBuildFileDocument = documentBuilder.parse(
+					moduleBuildFile);
 
-			Element moduleBuildFileElement =
-				moduleBuildFileDocument.getDocumentElement();
+				Element moduleBuildFileElement =
+					moduleBuildFileDocument.getDocumentElement();
 
-			moduleBuildFileElement.normalize();
+				moduleBuildFileElement.normalize();
 
-			NodeList modulePropertyList =
-				moduleBuildFileDocument.getElementsByTagName("property");
+				NodeList modulePropertyList =
+					moduleBuildFileDocument.getElementsByTagName("property");
 
-			for (int i = 0; i < modulePropertyList.getLength(); i++) {
-				Element modulePropertyElement =
-					(Element)modulePropertyList.item(i);
+				for (int i = 0; i < modulePropertyList.getLength(); i++) {
+					Element modulePropertyElement =
+						(Element) modulePropertyList.item(i);
 
-				String modulePropertyElementName =
-					modulePropertyElement.getAttribute("name");
+					String modulePropertyElementName =
+						modulePropertyElement.getAttribute("name");
 
-				if (modulePropertyElementName.equals("import.shared")) {
-					String moduleDependencyString =
-						modulePropertyElement.getAttribute("value");
+					if (modulePropertyElementName.equals("import.shared")) {
+						String moduleDependencyString =
+							modulePropertyElement.getAttribute("value");
 
-					String[] moduleDependencyList =
-						moduleDependencyString.split(",");
+						String[] moduleDependencyList =
+							moduleDependencyString.split(",");
 
-					for (String moduleDependency : moduleDependencyList) {
-						String[] moduleDependencySplit = moduleDependency.split(
-							"/");
+						for (String moduleDependency : moduleDependencyList) {
+							String[] moduleDependencySplit =
+								moduleDependency.split("/");
 
-						createDependencyElement(
-							dependenciesElement, _groupId + ":" + _version +
-							":" + moduleDependencySplit[
-								moduleDependencySplit.length -1]);
-					}
-				}
-			}
-
-			NodeList webLibPathNodes =
-				moduleBuildFileDocument.getElementsByTagName("path");
-
-			for (int i = 0; i < webLibPathNodes.getLength(); i++) {
-				Element webLibPathElement = (Element)webLibPathNodes.item(i);
-
-				String webLibPathElementId = webLibPathElement.getAttribute(
-					"id");
-
-				if (webLibPathElementId.equals("web-lib.classpath")) {
-					NodeList filesetNodeList =
-						webLibPathElement.getElementsByTagName("fileset");
-
-					Element filesetElement = (Element)filesetNodeList.item(0);
-
-					String libDependencyString = filesetElement.getAttribute(
-						"includes");
-
-					String[] libDependencyList = libDependencyString.split(",");
-
-					String libDependencyPath = filesetElement.getAttribute(
-						"dir");
-
-					String parsedPath = libDependencyPath.replace(
-						"${project.dir}", _portalPath);
-
-					for (String libDependency : libDependencyList) {
-						libDependencyPath = parsedPath + "/" + libDependency;
-
-						File dependencyFile = new File(libDependencyPath);
-
-						if (!dependencyFile.exists()) {
-							System.out.println(
-								"Path error at: " + parsedPath +
-								" for module: " + _artifactId);
-						}
-						else {
 							createDependencyElement(
-								dependenciesElement, libDependencyPath);
+								dependenciesElement, _groupId + ":" + _version +
+								":" + moduleDependencySplit[
+									moduleDependencySplit.length - 1]);
+						}
+					}
+				}
+
+				NodeList webLibPathNodes =
+					moduleBuildFileDocument.getElementsByTagName("path");
+
+				for (int i = 0; i < webLibPathNodes.getLength(); i++) {
+					Element webLibPathElement =
+						(Element) webLibPathNodes.item(i);
+
+					String webLibPathElementId = 
+						webLibPathElement.getAttribute("id");
+
+					if (webLibPathElementId.equals("web-lib.classpath")) {
+						NodeList filesetNodeList =
+							webLibPathElement.getElementsByTagName("fileset");
+
+						Element filesetElement =
+							(Element) filesetNodeList.item(0);
+
+						String libDependencyString =
+							filesetElement.getAttribute("includes");
+
+						String[] libDependencyList =
+							libDependencyString.split(",");
+
+						String libDependencyPath = filesetElement.getAttribute(
+							"dir");
+
+						String parsedPath = libDependencyPath.replace(
+							"${project.dir}", _portalPath);
+
+						for (String libDependency : libDependencyList) {
+							libDependencyPath =
+								parsedPath + "/" + libDependency;
+
+							File dependencyFile = new File(libDependencyPath);
+
+							if (!dependencyFile.exists()) {
+								System.out.println(
+									"Path error at: " + parsedPath +
+									" for module: " + _artifactId);
+							}
+							else {
+								createDependencyElement(
+									dependenciesElement, libDependencyPath);
+							}
 						}
 					}
 				}
 			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -437,5 +443,4 @@ public class CreateModulePOM {
 	private static Document document;
 	private static DocumentBuilder documentBuilder;
 	private static DocumentBuilderFactory documentBuilderFactory;
-
 }

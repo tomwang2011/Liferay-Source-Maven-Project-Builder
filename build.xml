@@ -141,7 +141,6 @@
 					<basename property="src.dir.name" file="${src.dir}" />
 				</then>
 			</if>
-
 		</sequential>
 	</macrodef>
 
