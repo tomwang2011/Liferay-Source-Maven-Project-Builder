@@ -19,6 +19,7 @@
 	</taskdef>
 
 	<path id="module.classpath">
+		<fileset dir="${portal.dir}/lib/development" includes="*.jar" />
 		<fileset dir="${app.server.lib.global.dir}" includes="*.jar" />
 		<fileset dir="${app.server.lib.portal.dir}" includes="*.jar" />
 		<fileset dir="${sdk.dir}/dependencies/aQute.bnd/lib" includes="*.jar" />
@@ -156,6 +157,15 @@
 				</and>
 				<then>
 					<append-dependency-list	dependency="portal-test-internal" />
+				</then>
+			</if>
+
+			<if>
+				<and>
+					<equals arg1="@{src.dir.name}" arg2="portal-test-internal" />
+				</and>
+				<then>
+					<append-dependency-list	dependency="portal-test" />
 				</then>
 			</if>
 
