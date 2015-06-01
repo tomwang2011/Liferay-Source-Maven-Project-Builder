@@ -27,7 +27,9 @@ public class CreateModulePOM {
 
 		buildElement.appendChild(portalSourceDirElement);
 
-		if (_artifactId.endsWith("-test")) {
+		if (new File(
+			_fullPath.substring(0, _fullPath.length() -3) + "test").exists()) {
+
 			Element testSourceDirElement = document.createElement(
 				"testSourceDirectory");
 
@@ -289,8 +291,8 @@ public class CreateModulePOM {
 
 				ivyDocument.getDocumentElement().normalize();
 
-				NodeList ivyDependencyList = ivyDocument.getElementsByTagName(
-					"dependency");
+				NodeList ivyDependencyList =
+					ivyDocument.getElementsByTagName("dependency");
 
 				for (int i = 0; i < ivyDependencyList.getLength(); i++) {
 					Node ivyDependencyNode = ivyDependencyList.item(i);
@@ -383,7 +385,7 @@ public class CreateModulePOM {
 					Element webLibPathElement =
 						(Element) webLibPathNodes.item(i);
 
-					String webLibPathElementId = 
+					String webLibPathElementId =
 						webLibPathElement.getAttribute("id");
 
 					if (webLibPathElementId.equals("web-lib.classpath")) {
@@ -413,7 +415,7 @@ public class CreateModulePOM {
 
 							if (!dependencyFile.exists()) {
 								System.out.println(
-									"Path error at: " + parsedPath +
+									"Lib path error at: " + parsedPath +
 									" for module: " + _artifactId);
 							}
 							else {
