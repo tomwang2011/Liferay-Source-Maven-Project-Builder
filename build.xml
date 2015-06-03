@@ -240,8 +240,16 @@
 			<sequential>
 				<set-module-source-directory module="@{module}" />
 
+				<property file="exclude-modules.properties" prefix="excludes." />
+
 				<if>
-					<available file="${src.dir}/build.xml" />
+					<and>
+						<available file="${src.dir}/build.xml" />
+						<not>
+							<equals arg1="excludes.${src.dir.name}" arg2="true" />
+						</not>
+					</and>
+
 					<then>
 						<mkdir dir="${project.dir}/${src.dir.name}" />
 
@@ -283,9 +291,20 @@
 				<var name="src.dir.name" unset="true" />
 			</sequential>
 		</for>
+
+		<mkdir dir="${project.dir}/SourceModule" />
+
+		<java classname="CreateSourceModulePOM" classpath="${basedir}/classes">
+			<arg value="${groupId}" />
+			<arg value="SourceModule" />
+			<arg value="${version}" />
+			<arg value="jar" />
+			<arg value="SourceModule" />
+			<arg line="${module.list}" />
+		</java>
 	</target>
 
-	<target name="deploy-portal-pom" depends="deploy-all-module">
+	<target name="deploy-portal-pom" depends="clean, deploy-all-module">
 		<pathconvert property="module.classpath.convert" refid="module.classpath" pathsep=" " />
 
 		<if>
@@ -294,6 +313,10 @@
 					<var name="module.classpath.convert" value="" />
 				</then>
 		</if>
+
+		<var name="concat" value="${module.list} SourceModule" />
+
+		<var name="module.list" value="${concat}" />
 
 		<java classname="CreatePortalPOM" classpath="${basedir}/classes">
 			<arg value="${groupId}" />
