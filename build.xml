@@ -240,13 +240,13 @@
 			<sequential>
 				<set-module-source-directory module="@{module}" />
 
-				<property file="exclude-modules.properties" prefix="excludes." />
+				<property file="exclude-modules.properties" />
 
 				<if>
 					<and>
 						<available file="${src.dir}/build.xml" />
 						<not>
-							<equals arg1="excludes.${src.dir.name}" arg2="true" />
+							<contains string="${exclude-modules}" substring="${src.dir.name}" />
 						</not>
 					</and>
 
@@ -281,7 +281,12 @@
 				<set-module-source-directory module="@{module}"	/>
 
 				<if>
-					<available file="${src.dir}/build.xml" />
+					<and>
+						<available file="${src.dir}/build.xml" />
+						<not>
+							<contains string="${exclude-modules}" substring="${src.dir.name}" />
+						</not>
+					</and>
 					<then>
 						<deploy-module-pom src.dir.name="${src.dir.name}" module="@{module}" />
 					</then>
