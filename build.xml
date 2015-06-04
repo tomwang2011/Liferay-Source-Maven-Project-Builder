@@ -8,7 +8,7 @@
 	<property name="app.server.lib.global.dir" value="${tomcat.dir}/lib/ext" />
 	<property name="app.server.lib.portal.dir" value="${tomcat.dir}/webapps/ROOT/WEB-INF/lib" />
 	<property name="module.dependency.list" value="" />
-	<property name="module.list" value="" />
+	<property name="module.list" value="SourceModule" />
 	<property name="project.dir" value="${basedir}/portal" />
 	<property name="sdk.dir" value="${portal.dir}/tools/sdk" />
 
@@ -253,15 +253,8 @@
 					<then>
 						<mkdir dir="${project.dir}/${src.dir.name}" />
 
-						<if>
-							<equals arg1="${module.list}" arg2="" />
-							<then>
-								<var name="concat" value="${src.dir.name}" />
-							</then>
-							<else>
-								<var name="concat" value="${module.list} ${src.dir.name}" />
-							</else>
-						</if>
+						<var name="concat" value="${module.list} ${src.dir.name}" />
+
 						<var name="module.list" value="${concat}" />
 					</then>
 				</if>
@@ -318,10 +311,6 @@
 					<var name="module.classpath.convert" value="" />
 				</then>
 		</if>
-
-		<var name="concat" value="${module.list} SourceModule" />
-
-		<var name="module.list" value="${concat}" />
 
 		<java classname="CreatePortalPOM" classpath="${basedir}/classes">
 			<arg value="${groupId}" />

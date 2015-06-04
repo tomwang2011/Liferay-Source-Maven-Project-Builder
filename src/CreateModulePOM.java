@@ -15,7 +15,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 public class CreateModulePOM {
 
 	public static void createBuildElement(
@@ -28,7 +27,8 @@ public class CreateModulePOM {
 		buildElement.appendChild(portalSourceDirElement);
 
 		if (new File(
-			_fullPath.substring(0, _fullPath.length() -3) + "test").exists()) {
+				_fullPath.substring(
+					0, _fullPath.length() -3) + "test").exists()) {
 
 			Element testSourceDirElement = document.createElement(
 				"testSourceDirectory");
@@ -297,7 +297,7 @@ public class CreateModulePOM {
 				for (int i = 0; i < ivyDependencyList.getLength(); i++) {
 					Node ivyDependencyNode = ivyDependencyList.item(i);
 
-					Element ivyDependencyElement = (Element) ivyDependencyNode;
+					Element ivyDependencyElement = (Element)ivyDependencyNode;
 
 					String ivyDependency;
 
@@ -354,7 +354,7 @@ public class CreateModulePOM {
 
 				for (int i = 0; i < modulePropertyList.getLength(); i++) {
 					Element modulePropertyElement =
-						(Element) modulePropertyList.item(i);
+						(Element)modulePropertyList.item(i);
 
 					String modulePropertyElementName =
 						modulePropertyElement.getAttribute("name");
@@ -383,7 +383,7 @@ public class CreateModulePOM {
 
 				for (int i = 0; i < webLibPathNodes.getLength(); i++) {
 					Element webLibPathElement =
-						(Element) webLibPathNodes.item(i);
+						(Element)webLibPathNodes.item(i);
 
 					String webLibPathElementId =
 						webLibPathElement.getAttribute("id");
@@ -393,7 +393,7 @@ public class CreateModulePOM {
 							webLibPathElement.getElementsByTagName("fileset");
 
 						Element filesetElement =
-							(Element) filesetNodeList.item(0);
+							(Element)filesetNodeList.item(0);
 
 						String libDependencyString =
 							filesetElement.getAttribute("includes");
@@ -445,4 +445,5 @@ public class CreateModulePOM {
 	private static Document document;
 	private static DocumentBuilder documentBuilder;
 	private static DocumentBuilderFactory documentBuilderFactory;
+
 }

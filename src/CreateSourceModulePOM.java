@@ -13,9 +13,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 public class CreateSourceModulePOM {
 
 	public static void createDependenciesElement(Element projectElement) {
@@ -55,13 +52,13 @@ public class CreateSourceModulePOM {
 	}
 
 	public static void createModulePOM(
-		Element projectElement, Element portalSourceDirElement) {
+		Element projectElement) {
 
 		createDependenciesElement(projectElement);
 	}
 
 	public static void createParentElement(
-		Element projectElement, Element portalSourceDirElement) {
+		Element projectElement) {
 
 		Element parent = document.createElement("parent");
 
@@ -90,12 +87,9 @@ public class CreateSourceModulePOM {
 		Element projectElement = CreatePOM.createProjectElement(
 			document, _artifactId, _groupId, _name, _packaging, _version);
 
-		Element portalSourceDirElement = document.createElement(
-			"sourceDirectory");
+		createParentElement(projectElement);
 
-		createParentElement(projectElement, portalSourceDirElement);
-
-		createModulePOM(projectElement, portalSourceDirElement);
+		createModulePOM(projectElement);
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -165,4 +159,5 @@ public class CreateSourceModulePOM {
 	private static Document document;
 	private static DocumentBuilder documentBuilder;
 	private static DocumentBuilderFactory documentBuilderFactory;
+
 }

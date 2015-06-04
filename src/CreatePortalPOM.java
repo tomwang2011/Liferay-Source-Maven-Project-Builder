@@ -12,7 +12,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 public class CreatePortalPOM {
 
 	public static void createDependenciesElement(
@@ -88,7 +87,7 @@ public class CreatePortalPOM {
 
 			i++;
 
-			if(i==_tokens.length) break;
+			if (i ==_tokens.length)break;
 		}
 
 		return (i);
@@ -251,4 +250,5 @@ public class CreatePortalPOM {
 	private static String[] _tokens;
 	private static String _version;
 	private static Document document;
+
 }
