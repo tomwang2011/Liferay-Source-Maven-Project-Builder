@@ -323,6 +323,8 @@
 			<arg line="${module.classpath.convert}" />
 		</java>
 
+		<copy file="nbactions.xml" todir="portal" />
+
 		<delete dir="ivytopom" quiet="true"/>
 	</target>
 </project>
