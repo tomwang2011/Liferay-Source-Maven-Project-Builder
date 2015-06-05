@@ -305,7 +305,7 @@
 			<arg value="${groupId}" />
 			<arg value="SourceModule" />
 			<arg value="${version}" />
-			<arg value="jar" />
+			<arg value="pom" />
 			<arg value="SourceModule" />
 			<arg line="${module.list}" />
 		</java>
