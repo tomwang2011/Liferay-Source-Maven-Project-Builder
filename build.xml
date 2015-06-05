@@ -99,6 +99,15 @@
 				</then>
 			</if>
 
+			<if>
+				<equals arg1="${dependencies.off}" arg2="true" />
+				<then>
+					<var name="ivy.module.dependency" value="$" />
+					<var name="module.build.file" value="$" />
+					<var name="module.dependency.list" value="" />
+				</then>
+			</if>
+
 			<java classname="CreateModulePOM" classpath="${basedir}/classes">
 				<arg value="${groupId}" />
 				<arg value="@{src.dir.name}" />
