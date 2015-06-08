@@ -21,7 +21,7 @@ public class CreateSourceModulePOM {
 		projectElement.appendChild(dependenciesElement);
 
 		for (String _token : _tokens) {
-			if(!_token.equals(_artifactId)) {
+			if (!_token.equals(_artifactId)) {
 				createDependencyElement(dependenciesElement, _token);
 			}
 		}
