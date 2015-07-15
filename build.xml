@@ -3,8 +3,16 @@
 <project name="MavenPortal" basedir="." default="deploy-portal-pom" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<!--Set to Liferay Portal directory-->
 
+	<property file="build-ext.properties" />
 	<property file="build.properties" />
 
+	<property file="${portal.dir}/app.server.${user.name}.properties" />
+	<property file="${portal.dir}/app.server.${env.COMPUTERNAME}.properties" />
+	<property file="${portal.dir}/app.server.${env.HOST}.properties" />
+	<property file="${portal.dir}/app.server.${env.HOSTNAME}.properties" />
+	<property file="${portal.dir}/app.server.properties" />
+
+	<property name="tomcat.dir" value="${app.server.tomcat.dir}"/>
 	<property name="app.server.lib.global.dir" value="${tomcat.dir}/lib/ext" />
 	<property name="app.server.lib.portal.dir" value="${tomcat.dir}/webapps/ROOT/WEB-INF/lib" />
 	<property name="module.dependency.list" value="" />
@@ -326,7 +334,7 @@
 			<arg value="portal" />
 			<arg value="${version}" />
 			<arg value="pom" />
-			<arg value="Liferay Portal" />
+			<arg value="Liferay Source Maven Project" />
 			<arg value="${portal.dir}" />
 			<arg line="${module.list}" />
 			<arg line="${module.classpath.convert}" />
