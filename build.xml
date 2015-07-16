@@ -233,6 +233,17 @@
 		</sequential>
 	</macrodef>
 
+	<target name="build-tomcat">
+		<if>
+			<equals arg1="${skip.build.portal}" arg2="false" />
+			<then>
+				<subant target="all">
+					<fileset dir="${portal.dir}" includes="build.xml" />
+				</subant>
+			</then>
+		</if>
+	</target>
+
 	<target name="clean">
 		<delete dir="portal" quiet="true" />
 		<delete dir="classes" quiet="true" />
@@ -319,7 +330,7 @@
 		</java>
 	</target>
 
-	<target name="deploy-portal-pom" depends="clean, deploy-all-module">
+	<target name="deploy-portal-pom" depends="build-tomcat, clean, deploy-all-module">
 		<pathconvert property="module.classpath.convert" refid="module.classpath" pathsep=" " />
 
 		<if>
