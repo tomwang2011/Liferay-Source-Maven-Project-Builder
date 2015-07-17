@@ -205,7 +205,7 @@
 				</sequential>
 			</for>
 
-			<property file="dependency-ext.properties" prefix="appender.ext." />
+			<property file="external-dependency.properties" prefix="appender.ext." />
 
 			<propertyselector property="appenders.ext" match="appender\.ext\.(.*)" select="\1" />
 
