@@ -186,6 +186,7 @@
 				</then>
 			</if>
 
+			<property file="dependency-ext.properties" prefix="appender." />
 			<property file="dependency.properties" prefix="appender." />
 
 			<propertyselector property="appenders" match="appender\.(.*)" select="\1" />
@@ -205,6 +206,7 @@
 				</sequential>
 			</for>
 
+			<property file="external-dependency-ext.properties" prefix="appender.ext." />
 			<property file="external-dependency.properties" prefix="appender.ext." />
 
 			<propertyselector property="appenders.ext" match="appender\.ext\.(.*)" select="\1" />
@@ -268,6 +270,7 @@
 			<sequential>
 				<set-module-source-directory module="@{module}" />
 
+				<property file="exclude-modules-ext.properties" />
 				<property file="exclude-modules.properties" />
 
 				<if>
